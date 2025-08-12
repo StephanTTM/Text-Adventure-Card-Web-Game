@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import MainMenu from './pages/MainMenu';
 import DeckBuilder from './pages/DeckBuilder';
+import MissionEditor from './pages/MissionEditor';
 
 export default function App() {
   const [player, setPlayer] = useState(null);
-  const [view, setView] = useState('menu');
 
   useEffect(() => {
     fetch('http://localhost:4000/players/example_player')
@@ -13,9 +14,11 @@ export default function App() {
       .catch((err) => console.error('Failed to load player', err));
   }, []);
 
-  if (view === 'deck') {
-    return <DeckBuilder player={player} onBack={() => setView('menu')} />;
-  }
-
-  return <MainMenu player={player} onOpenDeckBuilder={() => setView('deck')} />;
+  return (
+    <Routes>
+      <Route path="/" element={<MainMenu player={player} />} />
+      <Route path="/deck" element={<DeckBuilder player={player} />} />
+      <Route path="/mission-editor" element={<MissionEditor player={player} />} />
+    </Routes>
+  );
 }
