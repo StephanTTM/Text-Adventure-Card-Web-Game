@@ -1,6 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function App() {
+  const [player, setPlayer] = useState(null);
+
+  useEffect(() => {
+    fetch('http://localhost:4000/players/example_player')
+      .then((res) => res.json())
+      .then(setPlayer)
+      .catch((err) => console.error('Failed to load player', err));
+  }, []);
+
   const containerStyle = {
     position: 'relative',
     minHeight: '100vh',
@@ -49,8 +58,10 @@ export default function App() {
   return (
     <div style={containerStyle}>
       <div style={profileStyle}>
-        <div style={avatarStyle}>P</div>
-        <span>Player</span>
+        <div style={avatarStyle}>
+          {player ? player.profile.name.charAt(0) : 'P'}
+        </div>
+        <span>{player ? player.profile.name : 'Player'}</span>
       </div>
 
       <h1>Main Menu</h1>
@@ -68,6 +79,25 @@ export default function App() {
           <button style={buttonStyle}>Mission Editor</button>
         </li>
       </ul>
+
+      {player && (
+        <div style={{ marginTop: 32, textAlign: 'left' }}>
+          <h2>Deck ({player.deck.length})</h2>
+          <ul>
+            {player.deck.map((card) => (
+              <li key={card.id}>{card.name}</li>
+            ))}
+          </ul>
+          <h2>Inventory</h2>
+          <ul>
+            {player.inventory.items.map((item) => (
+              <li key={item.id}>
+                {item.name} x{item.quantity}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
