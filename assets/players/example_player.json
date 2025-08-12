@@ -1,0 +1,25 @@
+{
+  "id": "example_player",
+  "profile": {
+    "name": "Aria Swiftwind",
+    "avatar": "aria.png",
+    "level": 3,
+    "xp": 750,
+    "gold": 150
+  },
+  "deck": [
+    { "id": "strike", "name": "Strike", "type": "attack", "power": 6 },
+    { "id": "defend", "name": "Defend", "type": "skill", "block": 5 },
+    { "id": "fireball", "name": "Fireball", "type": "spell", "power": 8 }
+  ],
+  "inventory": {
+    "gold": 150,
+    "items": [
+      { "id": "healing_potion", "name": "Healing Potion", "quantity": 3 },
+      { "id": "rope", "name": "Climbing Rope", "quantity": 1 }
+    ],
+    "cards": [
+      { "id": "quick_slash", "name": "Quick Slash", "type": "attack", "power": 4 }
+    ]
+  }
+}
