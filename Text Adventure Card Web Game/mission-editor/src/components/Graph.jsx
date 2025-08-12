@@ -2,6 +2,7 @@ import React, { useMemo, useCallback } from 'react';
 import ReactFlow, { Controls, Background, MarkerType } from 'reactflow';
 import { validateMission } from '../lib/validate.js';
 import CustomNode from './CustomNode.jsx';
+import RoomNode from './RoomNode.jsx';
 
 // Import default styles for React Flow. Without these the graph will not be visible.
 import 'reactflow/dist/style.css';
@@ -20,8 +21,9 @@ export default function Graph({ mission, selectedNodeId, onSelectNode, highlight
   // Build nodes and edges from mission
   const { nodes, edges } = useMemo(() => {
     const nodes = [];
-    const edges = [];
-    if (!mission) return { nodes, edges };
+    const storyEdges = [];
+    const roomEdges = [];
+    if (!mission) return { nodes, edges: [] };
 
     // Determine unreachable nodes if highlight is enabled
     let unreachableIds = [];
@@ -49,13 +51,13 @@ export default function Graph({ mission, selectedNodeId, onSelectNode, highlight
     // Build edges from outcomes referencing reveal_node
     const addEdge = (sourceId, targetId, handleId = null) => {
       const edge = {
-        id: `${sourceId}-${targetId}-${edges.length}`,
+        id: `${sourceId}-${targetId}-${storyEdges.length}`,
         source: sourceId,
         target: targetId,
         markerEnd: { type: MarkerType.ArrowClosed },
       };
       if (handleId) edge.sourceHandle = handleId;
-      edges.push(edge);
+      storyEdges.push(edge);
     };
     if (Array.isArray(mission.nodes)) {
       mission.nodes.forEach((node) => {
@@ -83,17 +85,37 @@ export default function Graph({ mission, selectedNodeId, onSelectNode, highlight
     }
 
     // Determine incoming edges to mark nodes without inputs
-    const incoming = new Set(edges.map((e) => e.target));
+    const incoming = new Set(storyEdges.map((e) => e.target));
 
     // Build React Flow nodes with positions and custom metadata
-    const xSpacing = 300;
+    const xSpacing = 380;
     const ySpacing = 120;
+    const roomWidth = 260;
+    const nodeXOffset = 20;
+    const nodeYOffset = 40;
     rooms.forEach((room) => {
       const idx = roomIndex.get(room.id) || 0;
-      const x = idx * xSpacing;
       const list = nodesByRoom.get(room.id) || [];
+      const roomNodeId = `room-${room.id}`;
+      const height = Math.max(list.length * ySpacing + nodeYOffset + 20, 120);
+      // Room container node
+      nodes.push({
+        id: roomNodeId,
+        data: { label: room.name || room.id },
+        position: { x: idx * xSpacing, y: 0 },
+        type: 'room',
+        style: {
+          width: roomWidth,
+          height,
+          padding: 10,
+          background: '#f5f5f5',
+          border: '2px solid #777',
+          borderRadius: 8,
+        },
+      });
+      // Storylet nodes inside the room
       list.forEach((node, nodeIdx) => {
-        const y = nodeIdx * ySpacing;
+        const y = nodeIdx * ySpacing + nodeYOffset;
         const isUnreachable = unreachableIds.includes(node.id);
         const outputsCount = Array.isArray(node.choices) && node.choices.length > 0 ? node.choices.length : 1;
         const noInput = !incoming.has(node.id);
@@ -106,8 +128,10 @@ export default function Graph({ mission, selectedNodeId, onSelectNode, highlight
             outputs: outputsCount,
             noInput,
           },
-          position: { x, y },
+          position: { x: nodeXOffset, y },
           type: 'custom',
+          parentNode: roomNodeId,
+          extent: 'parent',
           style: {
             border: selectedNodeId === node.id ? '2px solid #007acc' : isUnreachable ? '2px dashed #d9534f' : '1px solid #999',
             borderRadius: 4,
@@ -115,8 +139,25 @@ export default function Graph({ mission, selectedNodeId, onSelectNode, highlight
           },
         });
       });
+
+      // Room-to-room edges based on exits
+      if (Array.isArray(room.exits)) {
+        room.exits.forEach((exit) => {
+          if (exit && exit.to) {
+            const targetRoomId = `room-${exit.to}`;
+            roomEdges.push({
+              id: `${roomNodeId}-${targetRoomId}-${roomEdges.length}`,
+              source: roomNodeId,
+              target: targetRoomId,
+              markerEnd: { type: MarkerType.ArrowClosed },
+              style: { stroke: '#888', strokeDasharray: '5 5' },
+            });
+          }
+        });
+      }
     });
 
+    const edges = [...storyEdges, ...roomEdges];
     return { nodes, edges };
   }, [mission, selectedNodeId, highlightUnreachable]);
 
@@ -135,7 +176,7 @@ export default function Graph({ mission, selectedNodeId, onSelectNode, highlight
         zoomOnScroll={true}
         zoomOnPinch={true}
         zoomOnDoubleClick={true}
-        nodeTypes={{ custom: CustomNode }}
+        nodeTypes={{ custom: CustomNode, room: RoomNode }}
       >
         <Background color="#aaa" gap={16} />
         <Controls />
