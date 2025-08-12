@@ -35,6 +35,16 @@ This directory holds shared resources including missions, images and music.  A s
 
 Documentation for the project.  You can describe the mission schema, game rules, API contracts, or any other information relevant to development.
 
+## Deck Composition
+
+Player decks have fixed slots to ensure consistent gameplay balance. A complete deck contains:
+
+- **1 Character card** – defines class, race/species, core stats, abilities and the primary attack.
+- **1 Weapon card** – modifies attacks and can grant additional skills.
+- **3 Equipment cards** – one each for **Boots**, **Gloves** and **Body** armor.
+- **2 Accessory cards** – such as pets, relics, charms or similar items.
+- **1 Utility card** – provides bonuses, unlocks or a multiclass option.
+
 ## Getting Started
 
 Each sub‑package (`mission-editor`, `game-client`, `server`) has its own `package.json`.  To install dependencies and run a development server:
