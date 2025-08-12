@@ -7,11 +7,33 @@
     "xp": 750,
     "gold": 150
   },
-  "deck": [
-    { "id": "strike", "name": "Strike", "type": "attack", "power": 6 },
-    { "id": "defend", "name": "Defend", "type": "skill", "block": 5 },
-    { "id": "fireball", "name": "Fireball", "type": "spell", "power": 8 }
-  ],
+  "deck": {
+    "character": {
+      "id": "novice_warrior",
+      "name": "Novice Warrior",
+      "class": "Warrior",
+      "race": "Human",
+      "stats": { "str": 8, "dex": 5, "int": 3 },
+      "abilities": ["Shield Bash"],
+      "primary_attack": "Slash"
+    },
+    "weapon": {
+      "id": "iron_sword",
+      "name": "Iron Sword",
+      "attack_bonus": 2,
+      "skills": ["Heavy Swing"]
+    },
+    "equipment": {
+      "boots": { "id": "leather_boots", "name": "Leather Boots", "armor": 1 },
+      "gloves": { "id": "leather_gloves", "name": "Leather Gloves", "armor": 1 },
+      "body": { "id": "leather_armor", "name": "Leather Armor", "armor": 3 }
+    },
+    "accessories": [
+      { "id": "pet_ferret", "name": "Pet Ferret", "effect": "Finds extra loot" },
+      { "id": "charm_of_luck", "name": "Charm of Luck", "effect": "+5% crit chance" }
+    ],
+    "utility": { "id": "double_jump", "name": "Double Jump", "bonus": "Access high platforms" }
+  },
   "inventory": {
     "gold": 150,
     "items": [
