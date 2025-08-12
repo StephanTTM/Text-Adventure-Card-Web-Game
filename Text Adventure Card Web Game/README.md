@@ -17,7 +17,7 @@ Text Adventure Card Web Game/
 
 ### mission-editor
 
-This folder contains a Vite + React application that provides a mission node graph editor.  It allows you to import/export JSON missions, edit rooms and nodes, visualize mission flow as a node graph and run basic validation.  See the `mission-editor/README.md` for details on running and developing the editor.
+This folder contains a Vite + React application that provides a mission node graph editor.  It allows you to import/export JSON missions, edit rooms and nodes, visualize mission flow as a node graph with directional connections, and run basic validation.  See the `mission-editor/README.md` for details on running and developing the editor.
 
 ### game-client
 
