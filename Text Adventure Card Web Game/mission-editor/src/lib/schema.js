@@ -36,6 +36,7 @@ export const OUTCOME_TYPES = [
   'grant_card',
   'grant_info',
   'grant_xp',
+  'damage_player',
   'apply_status',
   'start_battle',
   'end_mission',
