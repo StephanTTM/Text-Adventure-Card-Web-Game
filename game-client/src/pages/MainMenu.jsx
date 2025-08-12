@@ -1,7 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Card from '../components/Card';
 
-export default function MainMenu({ player, onOpenDeckBuilder }) {
+export default function MainMenu({ player }) {
   const containerStyle = {
     position: 'relative',
     minHeight: '100vh',
@@ -72,15 +73,17 @@ export default function MainMenu({ player, onOpenDeckBuilder }) {
           <button style={buttonStyle}>Mission Selection</button>
         </li>
         <li>
-          <button style={buttonStyle} onClick={onOpenDeckBuilder}>
-            Deck Editor
-          </button>
+          <Link to="/deck">
+            <button style={buttonStyle}>Deck Editor</button>
+          </Link>
         </li>
         <li>
           <button style={buttonStyle}>Inventory</button>
         </li>
         <li>
-          <button style={buttonStyle}>Mission Editor</button>
+          <Link to="/mission-editor">
+            <button style={buttonStyle}>Mission Editor</button>
+          </Link>
         </li>
       </ul>
 

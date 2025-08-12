@@ -1,7 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Card from '../components/Card';
 
-export default function DeckBuilder({ player, onBack }) {
+export default function DeckBuilder({ player }) {
   if (!player) {
     return <div>Loading...</div>;
   }
@@ -22,9 +23,9 @@ export default function DeckBuilder({ player, onBack }) {
 
   return (
     <div style={{ padding: 16 }}>
-      <button onClick={onBack} style={{ marginBottom: 16 }}>
-        Back to Menu
-      </button>
+      <Link to="/">
+        <button style={{ marginBottom: 16 }}>Back to Menu</button>
+      </Link>
       <h1>Deck Builder</h1>
       <div style={gridStyle}>
         {deck.map((card) => (
