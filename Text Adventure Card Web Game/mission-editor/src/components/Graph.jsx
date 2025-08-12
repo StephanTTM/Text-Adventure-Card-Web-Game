@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
-import ReactFlow, { Controls, Background } from 'reactflow';
+import ReactFlow, { Controls, Background, MarkerType } from 'reactflow';
 import { validateMission } from '../lib/validate.js';
 import CustomNode from './CustomNode.jsx';
 
@@ -48,7 +48,12 @@ export default function Graph({ mission, selectedNodeId, onSelectNode, highlight
 
     // Build edges from outcomes referencing reveal_node
     const addEdge = (sourceId, targetId, handleId = null) => {
-      const edge = { id: `${sourceId}-${targetId}-${edges.length}`, source: sourceId, target: targetId };
+      const edge = {
+        id: `${sourceId}-${targetId}-${edges.length}`,
+        source: sourceId,
+        target: targetId,
+        markerEnd: { type: MarkerType.ArrowClosed },
+      };
       if (handleId) edge.sourceHandle = handleId;
       edges.push(edge);
     };
