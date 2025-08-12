@@ -66,6 +66,21 @@ export default function App() {
     setSelectedRoomId(defaultMission.start_room_id || null);
   };
 
+  // Create a new empty mission with one room container
+  const createNewMission = () => {
+    const firstRoomId = `room_${Date.now()}`;
+    const newMission = {
+      rooms: [
+        { id: firstRoomId, name: 'Room 1', art: '', music: '', exits: [], auto_nodes: [] },
+      ],
+      nodes: [],
+      start_room_id: firstRoomId,
+    };
+    setMission(newMission);
+    setSelectedNodeId(null);
+    setSelectedRoomId(firstRoomId);
+  };
+
   // Render empty state when no mission is loaded
   if (!mission) {
     return (
@@ -76,7 +91,8 @@ export default function App() {
         <div className="app-body" style={{ justifyContent: 'center', alignItems: 'center' }}>
           <div style={{ maxWidth: 600, padding: '16px', textAlign: 'center' }}>
             <h2>No mission loaded</h2>
-            <p>Start by loading the provided sample mission or importing your own JSON file.</p>
+            <p>Create a new mission, load the sample mission, or import an existing JSON file.</p>
+            <button onClick={createNewMission} style={{ marginBottom: '8px' }}>New Empty Mission</button>
             <button onClick={loadSample} style={{ marginBottom: '8px' }}>Load Sample Mission</button>
             <div>
               <ExportImport mission={{}} onImport={handleImport} />

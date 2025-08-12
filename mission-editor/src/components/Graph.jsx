@@ -2,8 +2,8 @@ import React, { useMemo, useCallback } from 'react';
 import ReactFlow, { Controls, Background, MarkerType } from 'reactflow';
 import { validateMission } from '../lib/validate.js';
 import CustomNode from './CustomNode.jsx';
+import RoomContainer from './RoomContainer.jsx';
 
-// Import default styles for React Flow. Without these the graph will not be visible.
 import 'reactflow/dist/style.css';
 
 /**
@@ -86,14 +86,30 @@ export default function Graph({ mission, selectedNodeId, onSelectNode, highlight
     const incoming = new Set(edges.map((e) => e.target));
 
     // Build React Flow nodes with positions and custom metadata
-    const xSpacing = 300;
+    const roomWidth = 240;
+    const xSpacing = roomWidth + 80;
     const ySpacing = 120;
+    const headerHeight = 30;
+    const padding = 10;
+
     rooms.forEach((room) => {
       const idx = roomIndex.get(room.id) || 0;
       const x = idx * xSpacing;
       const list = nodesByRoom.get(room.id) || [];
+      const roomHeight = Math.max(list.length * ySpacing + headerHeight + padding * 2, 80);
+      const containerId = `room-container-${room.id}`;
+      nodes.push({
+        id: containerId,
+        data: { label: room.name || room.id },
+        position: { x, y: 0 },
+        type: 'room',
+        style: { width: roomWidth, height: roomHeight, zIndex: -1 },
+        draggable: false,
+        selectable: false,
+      });
+
       list.forEach((node, nodeIdx) => {
-        const y = nodeIdx * ySpacing;
+        const y = headerHeight + padding + nodeIdx * ySpacing;
         const isUnreachable = unreachableIds.includes(node.id);
         const outputsCount = Array.isArray(node.choices) && node.choices.length > 0 ? node.choices.length : 1;
         const noInput = !incoming.has(node.id);
@@ -106,8 +122,10 @@ export default function Graph({ mission, selectedNodeId, onSelectNode, highlight
             outputs: outputsCount,
             noInput,
           },
-          position: { x, y },
+          position: { x: padding, y },
           type: 'custom',
+          parentNode: containerId,
+          extent: 'parent',
           style: {
             border: selectedNodeId === node.id ? '2px solid #007acc' : isUnreachable ? '2px dashed #d9534f' : '1px solid #999',
             borderRadius: 4,
@@ -135,7 +153,7 @@ export default function Graph({ mission, selectedNodeId, onSelectNode, highlight
         zoomOnScroll={true}
         zoomOnPinch={true}
         zoomOnDoubleClick={true}
-        nodeTypes={{ custom: CustomNode }}
+        nodeTypes={{ custom: CustomNode, room: RoomContainer }}
       >
         <Background color="#aaa" gap={16} />
         <Controls />
