@@ -24,6 +24,7 @@ describe('App navigation', () => {
     fireEvent.click(screen.getByText('Mission Selection'));
     expect(await screen.findByText('Mission Selection')).toBeTruthy();
     expect(await screen.findByText('Whispering Corridors')).toBeTruthy();
+    expect(await screen.findByText('Mock Training Grounds')).toBeTruthy();
 
     fireEvent.click(screen.getByText('Back to Menu'));
     expect(await screen.findByText('Main Menu')).toBeTruthy();

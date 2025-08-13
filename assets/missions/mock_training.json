@@ -1,0 +1,106 @@
+{
+  "id": "mock_training",
+  "title": "Mock Training Grounds",
+  "start_room_id": "training_yard",
+  "version": 1,
+  "rooms": [
+    {
+      "id": "training_yard",
+      "name": "Training Yard",
+      "art": "training_yard.png",
+      "music": "training_theme.ogg",
+      "exits": [{ "to": "armory", "label": "Armory" }],
+      "auto_nodes": ["mission_intro", "practice_dummy"],
+      "max_visible_nodes": 2
+    },
+    {
+      "id": "armory",
+      "name": "Old Armory",
+      "art": "armory.png",
+      "music": "quiet_hum.ogg",
+      "exits": [{ "to": "training_yard", "label": "Back" }],
+      "auto_nodes": ["rusty_chest"],
+      "max_visible_nodes": 2
+    }
+  ],
+  "nodes": [
+    {
+      "id": "mission_intro",
+      "type": "scene",
+      "room_id": "training_yard",
+      "title": "Welcome",
+      "text": "This yard serves as your training ground.",
+      "auto_fire": true,
+      "repeatable": false,
+      "priority": 10,
+      "entry_conditions": [],
+      "choices": [{ "label": "Continue", "outcomes": [{ "noop": true }] }]
+    },
+    {
+      "id": "practice_dummy",
+      "type": "battle",
+      "room_id": "training_yard",
+      "title": "Practice Dummy",
+      "text": "A straw dummy awaits your strikes.",
+      "battle_id": "dummy_battle_v1",
+      "repeatable": true,
+      "priority": 5,
+      "entry_conditions": [],
+      "on_victory": [{ "reveal_node": "move_to_armory" }],
+      "on_defeat": [{ "apply_status": { "wound": 1 } }]
+    },
+    {
+      "id": "move_to_armory",
+      "type": "transition",
+      "room_id": "training_yard",
+      "title": "Enter the armory",
+      "text": "A door leads to the armory.",
+      "repeatable": true,
+      "priority": 1,
+      "entry_conditions": [],
+      "choices": [
+        {
+          "label": "Enter",
+          "outcomes": [{ "move_room": "armory" }]
+        }
+      ]
+    },
+    {
+      "id": "rusty_chest",
+      "type": "loot",
+      "room_id": "armory",
+      "title": "Rusty Chest",
+      "text": "Perhaps something useful remains.",
+      "repeatable": false,
+      "priority": 3,
+      "entry_conditions": [],
+      "choices": [
+        {
+          "label": "Open",
+          "outcomes": [
+            { "grant_item": "healing_draught" },
+            { "grant_card": { "tag": "equipment.common" } },
+            { "end_mission": { "success": true } }
+          ]
+        }
+      ]
+    }
+  ],
+  "battle_templates": [
+    {
+      "id": "dummy_battle_v1",
+      "enemies": ["training_dummy"],
+      "initiative": "SPD",
+      "rules": { "max_turns": 5 },
+      "loot_table_id": "dummy_loot"
+    }
+  ],
+  "loot_tables": [
+    {
+      "id": "dummy_loot",
+      "entries": [
+        { "pick": "card", "tag": "weapon.common", "weight": 100 }
+      ]
+    }
+  ]
+}
