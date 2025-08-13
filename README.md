@@ -35,6 +35,24 @@ Player decks have fixed slots to ensure consistent gameplay balance. A complete 
 - **2 Accessory cards** – such as pets, relics, charms or similar items.
 - **1 Utility card** – provides bonuses, unlocks or a multiclass option.
 
+## Character Cards
+
+Character cards define the hero leading a deck. Each stat starts at **5** and is modified by species and class choices. The available stats are:
+
+- **STR** – physical power
+- **AGI** – agility and reflexes
+- **INT** – intellect
+- **END** – endurance and toughness
+- **CHA** – charisma and social influence
+- **LCK** – luck and fortune
+- **ATK** – physical attack strength
+- **DEF** – physical defense
+- **SPATK** – special or magical attack
+- **SPDEF** – resistance to special attacks
+- **SPD** – movement speed
+
+Character cards also list abilities and the primary attack. See `assets/players/example_player.json` for a sample.
+
 ## Getting Started
 
 Each sub‑package (`game-client`) has its own `package.json`.  To install dependencies and run a development server:
