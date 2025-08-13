@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Card from '../components/Card';
+import DeckDisplay from '../components/DeckDisplay';
 
 export default function MainMenu({ player }) {
   const containerStyle = {
@@ -52,13 +52,18 @@ export default function MainMenu({ player }) {
     return <div style={containerStyle}>Loading...</div>;
   }
 
-  const deck = [
+  const deckSlots = [
     player.deck.character,
     player.deck.weapon,
-    ...Object.values(player.deck.equipment || {}),
-    ...player.deck.accessories,
+    player.deck.equipment?.body,
+    player.deck.equipment?.gloves,
+    player.deck.equipment?.boots,
+    player.deck.accessories?.[0],
+    player.deck.accessories?.[1],
     player.deck.utility,
-  ].filter(Boolean);
+  ];
+
+  const deckCount = deckSlots.filter(Boolean).length;
 
   return (
     <div style={containerStyle}>
@@ -88,12 +93,8 @@ export default function MainMenu({ player }) {
       </ul>
 
       <div style={{ marginTop: 32, textAlign: 'left' }}>
-        <h2>Deck ({deck.length})</h2>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {deck.map((card) => (
-            <Card key={card.id} card={card} />
-          ))}
-        </div>
+        <h2>Deck ({deckCount})</h2>
+        <DeckDisplay deck={player.deck} />
       </div>
     </div>
   );
