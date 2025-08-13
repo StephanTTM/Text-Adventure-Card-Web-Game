@@ -20,13 +20,28 @@ export default function Card({ card }) {
   function renderDetails() {
     switch (card.slot) {
       case 'character':
+        const statMap = [
+          ['str', 'STR'],
+          ['agi', 'AGI'],
+          ['int', 'INT'],
+          ['end', 'END'],
+          ['cha', 'CHA'],
+          ['lck', 'LCK'],
+          ['atk', 'ATK'],
+          ['def', 'DEF'],
+          ['spatk', 'SPATK'],
+          ['spdef', 'SPDEF'],
+          ['spd', 'SPD'],
+        ];
+        const stats = statMap
+          .filter(([key]) => card.stats?.[key] !== undefined)
+          .map(([key, label]) => `${label} ${card.stats[key]}`)
+          .join(', ');
         return (
           <>
             <div>Class: {card.class}</div>
             <div>Race: {card.race}</div>
-            <div>
-              Stats: STR {card.stats?.str}, DEX {card.stats?.dex}, INT {card.stats?.int}
-            </div>
+            {stats && <div>Stats: {stats}</div>}
             {card.abilities && <div>Abilities: {card.abilities.join(', ')}</div>}
             {card.primary_attack && <div>Primary: {card.primary_attack}</div>}
           </>
