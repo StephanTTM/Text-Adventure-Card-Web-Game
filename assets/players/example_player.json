@@ -11,6 +11,7 @@
     "character": {
       "id": "novice_warrior",
       "name": "Novice Warrior",
+      "slot": "character",
       "class": "Warrior",
       "race": "Human",
       "stats": { "str": 8, "dex": 5, "int": 3 },
@@ -20,19 +21,20 @@
     "weapon": {
       "id": "iron_sword",
       "name": "Iron Sword",
+      "slot": "weapon",
       "attack_bonus": 2,
       "skills": ["Heavy Swing"]
     },
     "equipment": {
-      "boots": { "id": "leather_boots", "name": "Leather Boots", "armor": 1 },
-      "gloves": { "id": "leather_gloves", "name": "Leather Gloves", "armor": 1 },
-      "body": { "id": "leather_armor", "name": "Leather Armor", "armor": 3 }
+      "boots": { "id": "leather_boots", "name": "Leather Boots", "slot": "boots", "armor": 1 },
+      "gloves": { "id": "leather_gloves", "name": "Leather Gloves", "slot": "gloves", "armor": 1 },
+      "body": { "id": "leather_armor", "name": "Leather Armor", "slot": "body", "armor": 3 }
     },
     "accessories": [
-      { "id": "pet_ferret", "name": "Pet Ferret", "effect": "Finds extra loot" },
-      { "id": "charm_of_luck", "name": "Charm of Luck", "effect": "+5% crit chance" }
+      { "id": "pet_ferret", "name": "Pet Ferret", "slot": "accessory", "effect": "Finds extra loot" },
+      { "id": "charm_of_luck", "name": "Charm of Luck", "slot": "accessory", "effect": "+5% crit chance" }
     ],
-    "utility": { "id": "double_jump", "name": "Double Jump", "bonus": "Access high platforms" }
+    "utility": { "id": "double_jump", "name": "Double Jump", "slot": "utility", "bonus": "Access high platforms" }
   },
   "inventory": {
     "gold": 150,
@@ -41,7 +43,9 @@
       { "id": "rope", "name": "Climbing Rope", "quantity": 1 }
     ],
     "cards": [
-      { "id": "quick_slash", "name": "Quick Slash", "type": "attack", "power": 4 }
+      { "id": "quick_slash", "name": "Quick Slash", "slot": "attack", "type": "attack", "power": 4 },
+      { "id": "steel_sword", "name": "Steel Sword", "slot": "weapon", "attack_bonus": 3, "skills": ["Piercing Strike"] },
+      { "id": "ring_of_speed", "name": "Ring of Speed", "slot": "accessory", "effect": "+2 speed" }
     ]
   }
 }
