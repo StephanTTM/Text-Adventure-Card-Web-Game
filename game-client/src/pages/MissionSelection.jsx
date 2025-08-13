@@ -13,7 +13,9 @@ export default function MissionSelection() {
       <h1>Mission Selection</h1>
       <ul>
         {missions.map((mission) => (
-          <li key={mission.id}>{mission.title}</li>
+          <li key={mission.id}>
+            <Link to={`/missions/${mission.id}`}>{mission.title}</Link>
+          </li>
         ))}
       </ul>
     </div>
