@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import DeckDisplay from '../components/DeckDisplay';
 import Card from '../components/Card';
 
-export default function DeckBuilder({ player }) {
+export default function DeckBuilder({ player, setPlayer }) {
   if (!player) {
     return <div>Loading...</div>;
   }
@@ -80,11 +80,23 @@ export default function DeckBuilder({ player }) {
     setSelected(null);
   }
 
+  function saveDeck() {
+    if (!setPlayer) return;
+    setPlayer((p) => ({
+      ...p,
+      deck,
+      inventory: { ...p.inventory, cards: inventory },
+    }));
+  }
+
   return (
     <div style={{ padding: 16 }}>
-      <Link to="/">
-        <button style={{ marginBottom: 16 }}>Back to Menu</button>
-      </Link>
+      <div style={{ marginBottom: 16, display: 'flex', gap: 8 }}>
+        <Link to="/">
+          <button>Back to Menu</button>
+        </Link>
+        <button onClick={saveDeck}>Save Deck</button>
+      </div>
       <h1>Deck Builder</h1>
       <p>Equipped Cards ({deckCount})</p>
       <DeckDisplay deck={deck} onSlotClick={equipToSlot} />
