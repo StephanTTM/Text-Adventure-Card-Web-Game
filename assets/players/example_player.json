@@ -100,9 +100,9 @@
       {
         "id": "quick_slash",
         "name": "Quick Slash",
-        "slot": "attack",
-        "type": "attack",
-        "power": 4
+        "slot": "utility",
+        "type": "utility",
+        "bonus": "React swiftly to gain an extra edge"
       },
       {
         "id": "steel_sword",
