@@ -88,23 +88,30 @@ export default function MissionPlayer({ player }) {
   }
 
   return (
-    <div style={{ padding: 16 }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        padding: 16,
+      }}
+    >
       <Link to="/missions">
-        <button style={{ marginBottom: 16 }}>Back to Mission Selection</button>
+        <button style={{ marginBottom: 32 }}>Back to Mission Selection</button>
       </Link>
-      <h1 style={{ marginBottom: 8 }}>Mission Name</h1>
-      <p style={{ marginBottom: 24 }}>{mission.title}</p>
-      <h2 style={{ marginBottom: 8 }}>Room Name</h2>
-      <p style={{ marginBottom: 24 }}>{room.name}</p>
+      <h1 style={{ marginBottom: 16 }}>Mission Name</h1>
+      <p style={{ marginBottom: 32 }}>{mission.title}</p>
+      <h2 style={{ marginBottom: 16 }}>Room Name</h2>
+      <p style={{ marginBottom: 32 }}>{room.name}</p>
       {node && (
-        <div key={node.id} style={{ marginBottom: 24 }}>
-          <h3 style={{ marginBottom: 8 }}>Event Title</h3>
-          <p style={{ marginBottom: 16 }}>{node.title}</p>
-          <h3 style={{ marginBottom: 8 }}>Event Description</h3>
-          <p style={{ marginBottom: 16 }}>
+        <div key={node.id} style={{ marginTop: 'auto' }}>
+          <h3 style={{ marginBottom: 16 }}>Event Title</h3>
+          <p style={{ marginBottom: 24 }}>{node.title}</p>
+          <h3 style={{ marginBottom: 16 }}>Event Description</h3>
+          <p style={{ marginBottom: 24 }}>
             <TypewriterText text={node.text} />
           </p>
-          <h3 style={{ marginBottom: 8 }}>Options</h3>
+          <h3 style={{ marginBottom: 16 }}>Options</h3>
           {node.type === 'battle' ? (
             <BattleSystem
               deck={player.deck}
