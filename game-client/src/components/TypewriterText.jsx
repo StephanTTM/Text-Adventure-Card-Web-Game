@@ -8,7 +8,8 @@ export default function TypewriterText({ text, speed = 30 }) {
     if (!text) return;
     let i = 0;
     const interval = setInterval(() => {
-      setDisplayed((prev) => prev + text[i]);
+      const char = text.charAt(i);
+      setDisplayed((prev) => prev + char);
       i += 1;
       if (i >= text.length) {
         clearInterval(interval);
