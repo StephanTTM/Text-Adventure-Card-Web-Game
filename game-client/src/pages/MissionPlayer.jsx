@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import BattleSystem from '../components/BattleSystem.jsx';
 
 // Load all mission JSON files eagerly so we can look them up by id
 const modules = import.meta.glob('../../../assets/missions/*.json', { eager: true });
 const missions = Object.values(modules).map((m) => m.default);
 
-export default function MissionPlayer() {
+export default function MissionPlayer({ player }) {
   const { missionId } = useParams();
   const navigate = useNavigate();
   const mission = missions.find((m) => m.id === missionId);
@@ -71,8 +72,8 @@ export default function MissionPlayer() {
     }
   }
 
-  function handleNodeAction(node) {
-    const outcomes = node.on_victory || [];
+  function handleBattleOutcome(victory, node) {
+    const outcomes = victory ? node.on_victory || [] : node.on_defeat || [];
     let moved = false;
     let finished = false;
     outcomes.forEach((o) => {
@@ -98,7 +99,11 @@ export default function MissionPlayer() {
             <h3>{node.title}</h3>
             <p>{node.text}</p>
             {node.type === 'battle' ? (
-              <button onClick={() => handleNodeAction(node)}>Resolve Battle</button>
+              <BattleSystem
+                deck={player.deck}
+                onVictory={() => handleBattleOutcome(true, node)}
+                onDefeat={() => handleBattleOutcome(false, node)}
+              />
             ) : (
               node.choices?.map((choice, idx) => (
                 <button

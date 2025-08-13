@@ -17,7 +17,7 @@ export default function App() {
       <Route path="/deck" element={<DeckBuilder player={player} />} />
       <Route path="/mission-editor" element={<MissionEditor player={player} />} />
       <Route path="/missions" element={<MissionSelection />} />
-      <Route path="/missions/:missionId" element={<MissionPlayer />} />
+      <Route path="/missions/:missionId" element={<MissionPlayer player={player} />} />
       <Route path="/missions/:missionId/results" element={<MissionResults />} />
     </Routes>
   );
