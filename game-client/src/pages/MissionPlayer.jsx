@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import BattleSystem from '../components/BattleSystem.jsx';
+import TypewriterText from '../components/TypewriterText.jsx';
 
 // Load all mission JSON files eagerly so we can look them up by id
 const modules = import.meta.glob('../../../assets/missions/*.json', { eager: true });
@@ -91,33 +92,38 @@ export default function MissionPlayer({ player }) {
       <Link to="/missions">
         <button style={{ marginBottom: 16 }}>Back to Mission Selection</button>
       </Link>
-      <h1>{mission.title}</h1>
-      <div>
-        <h2>{room.name}</h2>
-        {node && (
-          <div key={node.id} style={{ marginBottom: 16 }}>
-            <h3>{node.title}</h3>
-            <p>{node.text}</p>
-            {node.type === 'battle' ? (
-              <BattleSystem
-                deck={player.deck}
-                onVictory={() => handleBattleOutcome(true, node)}
-                onDefeat={() => handleBattleOutcome(false, node)}
-              />
-            ) : (
-              node.choices?.map((choice, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleChoice(choice, node)}
-                  style={{ marginRight: 8 }}
-                >
-                  {choice.label}
-                </button>
-              ))
-            )}
-          </div>
-        )}
-      </div>
+      <h1 style={{ marginBottom: 8 }}>Mission Name</h1>
+      <p style={{ marginBottom: 24 }}>{mission.title}</p>
+      <h2 style={{ marginBottom: 8 }}>Room Name</h2>
+      <p style={{ marginBottom: 24 }}>{room.name}</p>
+      {node && (
+        <div key={node.id} style={{ marginBottom: 24 }}>
+          <h3 style={{ marginBottom: 8 }}>Event Title</h3>
+          <p style={{ marginBottom: 16 }}>{node.title}</p>
+          <h3 style={{ marginBottom: 8 }}>Event Description</h3>
+          <p style={{ marginBottom: 16 }}>
+            <TypewriterText text={node.text} />
+          </p>
+          <h3 style={{ marginBottom: 8 }}>Options</h3>
+          {node.type === 'battle' ? (
+            <BattleSystem
+              deck={player.deck}
+              onVictory={() => handleBattleOutcome(true, node)}
+              onDefeat={() => handleBattleOutcome(false, node)}
+            />
+          ) : (
+            node.choices?.map((choice, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleChoice(choice, node)}
+                style={{ marginRight: 8, marginBottom: 8 }}
+              >
+                {choice.label}
+              </button>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 }
