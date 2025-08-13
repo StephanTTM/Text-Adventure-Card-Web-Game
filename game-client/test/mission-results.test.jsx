@@ -33,10 +33,12 @@ describe('Mission results', () => {
     await screen.findByText('Collapsed Corridor');
     fireEvent.click(screen.getByText('Climb (STR check)'));
 
-    // side corridor -> guards_patrol -> Resolve Battle
+    // side corridor -> guards_patrol -> battle
     expect(await screen.findByText('Side Corridor')).toBeTruthy();
     await screen.findByText('Palace Guards');
-    fireEvent.click(screen.getByText('Resolve Battle'));
+    for (let i = 0; i < 3; i++) {
+      fireEvent.click(await screen.findByText('Slash'));
+    }
 
     // to_vault_antechamber -> Proceed
     await screen.findByText('Descend the stairs');
