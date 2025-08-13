@@ -21,6 +21,13 @@ describe('App navigation', () => {
 
     expect(await screen.findByText('Main Menu')).toBeTruthy();
 
+    fireEvent.click(screen.getByText('Mission Selection'));
+    expect(await screen.findByText('Mission Selection')).toBeTruthy();
+    expect(await screen.findByText('Whispering Corridors')).toBeTruthy();
+
+    fireEvent.click(screen.getByText('Back to Menu'));
+    expect(await screen.findByText('Main Menu')).toBeTruthy();
+
     fireEvent.click(screen.getByText('Deck Editor'));
     expect(await screen.findByText('Deck Builder')).toBeTruthy();
 
