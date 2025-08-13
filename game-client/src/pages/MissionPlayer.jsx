@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
 // Load all mission JSON files eagerly so we can look them up by id
@@ -11,6 +11,7 @@ export default function MissionPlayer() {
 
   const [currentRoomId, setCurrentRoomId] = useState(mission ? mission.start_room_id : null);
   const [ended, setEnded] = useState(false);
+  const [currentNodeIndex, setCurrentNodeIndex] = useState(0);
 
   if (!mission) {
     return (
@@ -40,6 +41,11 @@ export default function MissionPlayer() {
   const nodes = room.auto_nodes
     .map((id) => mission.nodes.find((n) => n.id === id))
     .filter(Boolean);
+  const node = nodes[currentNodeIndex];
+
+  useEffect(() => {
+    setCurrentNodeIndex(0);
+  }, [currentRoomId]);
 
   function handleOutcome(outcome) {
     if (outcome.move_room) {
@@ -50,14 +56,36 @@ export default function MissionPlayer() {
     }
   }
 
-  function handleChoice(choice) {
+  function advanceNode() {
+    setCurrentNodeIndex((idx) => idx + 1);
+  }
+
+  function handleChoice(choice, node) {
     const outcomes = choice.outcomes || choice.success_outcomes || [];
-    outcomes.forEach(handleOutcome);
+    let moved = false;
+    let finished = false;
+    outcomes.forEach((o) => {
+      if (o.move_room) moved = true;
+      if (o.end_mission) finished = true;
+      handleOutcome(o);
+    });
+    if (!moved && !finished && !node.repeatable) {
+      advanceNode();
+    }
   }
 
   function handleNodeAction(node) {
     const outcomes = node.on_victory || [];
-    outcomes.forEach(handleOutcome);
+    let moved = false;
+    let finished = false;
+    outcomes.forEach((o) => {
+      if (o.move_room) moved = true;
+      if (o.end_mission) finished = true;
+      handleOutcome(o);
+    });
+    if (!moved && !finished && !node.repeatable) {
+      advanceNode();
+    }
   }
 
   return (
@@ -71,7 +99,7 @@ export default function MissionPlayer() {
       ) : (
         <div>
           <h2>{room.name}</h2>
-          {nodes.map((node) => (
+          {node && (
             <div key={node.id} style={{ marginBottom: 16 }}>
               <h3>{node.title}</h3>
               <p>{node.text}</p>
@@ -79,13 +107,17 @@ export default function MissionPlayer() {
                 <button onClick={() => handleNodeAction(node)}>Resolve Battle</button>
               ) : (
                 node.choices?.map((choice, idx) => (
-                  <button key={idx} onClick={() => handleChoice(choice)} style={{ marginRight: 8 }}>
+                  <button
+                    key={idx}
+                    onClick={() => handleChoice(choice, node)}
+                    style={{ marginRight: 8 }}
+                  >
                     {choice.label}
                   </button>
                 ))
               )}
             </div>
-          ))}
+          )}
         </div>
       )}
     </div>
