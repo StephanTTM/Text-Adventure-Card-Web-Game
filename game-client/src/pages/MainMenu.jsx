@@ -75,7 +75,9 @@ export default function MainMenu({ player }) {
       <h1>Main Menu</h1>
       <ul style={menuStyle}>
         <li>
-          <button style={buttonStyle}>Mission Selection</button>
+          <Link to="/missions">
+            <button style={buttonStyle}>Mission Selection</button>
+          </Link>
         </li>
         <li>
           <Link to="/deck">
