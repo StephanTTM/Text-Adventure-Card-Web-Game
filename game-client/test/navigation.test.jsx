@@ -23,10 +23,13 @@ describe('App navigation', () => {
 
     fireEvent.click(screen.getByText('Mission Selection'));
     expect(await screen.findByText('Mission Selection')).toBeTruthy();
-    expect(await screen.findByText('Whispering Corridors')).toBeTruthy();
+    expect(await screen.findByText('Test Mission')).toBeTruthy();
 
-    fireEvent.click(screen.getByText('Whispering Corridors'));
-    expect(await screen.findByText('Abandoned Palace Hall')).toBeTruthy();
+    fireEvent.click(screen.getByText('Test Mission'));
+    expect(await screen.findByText('Start Room')).toBeTruthy();
+
+    fireEvent.click(screen.getByText('Finish'));
+    expect(await screen.findByText('Mission complete.')).toBeTruthy();
 
     fireEvent.click(screen.getByText('Back to Mission Selection'));
     expect(await screen.findByText('Mission Selection')).toBeTruthy();

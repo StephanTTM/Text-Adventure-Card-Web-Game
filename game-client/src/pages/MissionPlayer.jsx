@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 
 // Load all mission JSON files eagerly so we can look them up by id
 const modules = import.meta.glob('../../../assets/missions/*.json', { eager: true });
@@ -8,6 +8,7 @@ const missions = Object.values(modules).map((m) => m.default);
 export default function MissionPlayer() {
   const { missionId } = useParams();
   const mission = missions.find((m) => m.id === missionId);
+  const navigate = useNavigate();
 
   const [currentRoomId, setCurrentRoomId] = useState(mission ? mission.start_room_id : null);
   const [ended, setEnded] = useState(false);
@@ -46,6 +47,12 @@ export default function MissionPlayer() {
   useEffect(() => {
     setCurrentNodeIndex(0);
   }, [currentRoomId]);
+
+  useEffect(() => {
+    if (ended) {
+      navigate(`/missions/${missionId}/results`);
+    }
+  }, [ended, navigate, missionId]);
 
   function handleOutcome(outcome) {
     if (outcome.move_room) {

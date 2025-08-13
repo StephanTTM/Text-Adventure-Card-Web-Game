@@ -5,6 +5,7 @@ import DeckBuilder from './pages/DeckBuilder';
 import MissionEditor from './pages/MissionEditor';
 import MissionSelection from './pages/MissionSelection';
 import MissionPlayer from './pages/MissionPlayer';
+import MissionResults from './pages/MissionResults';
 import examplePlayer from '../../assets/players/example_player.json';
 
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
       <Route path="/mission-editor" element={<MissionEditor player={player} />} />
       <Route path="/missions" element={<MissionSelection />} />
       <Route path="/missions/:missionId" element={<MissionPlayer />} />
+      <Route path="/missions/:missionId/results" element={<MissionResults />} />
     </Routes>
   );
 }

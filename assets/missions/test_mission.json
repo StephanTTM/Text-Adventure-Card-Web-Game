@@ -1,0 +1,29 @@
+{
+  "id": "test_mission",
+  "title": "Test Mission",
+  "start_room_id": "start",
+  "version": 1,
+  "rooms": [
+    {
+      "id": "start",
+      "name": "Start Room",
+      "auto_nodes": ["finish_node"],
+      "max_visible_nodes": 1
+    }
+  ],
+  "nodes": [
+    {
+      "id": "finish_node",
+      "type": "scene",
+      "room_id": "start",
+      "title": "Finish Node",
+      "text": "This mission ends immediately.",
+      "choices": [
+        {
+          "label": "Finish",
+          "outcomes": [{ "end_mission": { "success": true } }]
+        }
+      ]
+    }
+  ]
+}
