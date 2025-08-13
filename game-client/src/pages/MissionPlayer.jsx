@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import BattleSystem from '../components/BattleSystem.jsx';
 
 // Load all mission JSON files eagerly so we can look them up by id
 const modules = import.meta.glob('../../../assets/missions/*.json', { eager: true });
@@ -104,7 +105,10 @@ export default function MissionPlayer() {
               <h3>{node.title}</h3>
               <p>{node.text}</p>
               {node.type === 'battle' ? (
-                <button onClick={() => handleNodeAction(node)}>Resolve Battle</button>
+                <BattleSystem
+                  onVictory={() => handleNodeAction(node)}
+                  onDefeat={() => setEnded(true)}
+                />
               ) : (
                 node.choices?.map((choice, idx) => (
                   <button
