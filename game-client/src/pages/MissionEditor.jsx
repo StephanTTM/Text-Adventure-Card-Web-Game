@@ -10,18 +10,30 @@ export default function MissionEditor() {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [startRoomId, setStartRoomId] = useState('');
+  const [missionId, setMissionId] = useState('mission-1');
+  const [missionTitle, setMissionTitle] = useState('');
 
   const mission = useMemo(
     () => ({
+      id: missionId,
+      title: missionTitle,
       start_room_id: startRoomId,
-      rooms: nodes.map(({ id, data }) => ({ id, ...data })),
-      nodes: nodes.map(({ id, data }) => ({ id, ...data })),
+      rooms: nodes
+        .filter(({ type }) => type === 'room')
+        .map(({ id, data }) => ({ id, ...data })),
+      nodes: nodes
+        .filter(({ type }) => type !== 'room')
+        .map(({ id, type, data }) => ({ id, type, ...data })),
     }),
-    [startRoomId, nodes]
+    [missionId, missionTitle, startRoomId, nodes]
   );
 
   const handleMissionChange = useCallback(
-    (updatedMission) => setStartRoomId(updatedMission.start_room_id || ''),
+    (updatedMission) => {
+      setStartRoomId(updatedMission.start_room_id || '');
+      setMissionTitle(updatedMission.title || '');
+      if (updatedMission.id) setMissionId(updatedMission.id);
+    },
     []
   );
 

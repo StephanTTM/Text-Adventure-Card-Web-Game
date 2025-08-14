@@ -15,6 +15,24 @@ export default function NodeInspector({
       <aside style={{ padding: 8, borderLeft: '1px solid #ccc', width: 200 }}>
         <h3 style={{ marginTop: 0 }}>Mission</h3>
         <label>
+          Mission ID:
+          <input
+            type="text"
+            value={mission.id || ''}
+            readOnly
+            style={{ width: '100%' }}
+          />
+        </label>
+        <label>
+          Mission Name:
+          <input
+            type="text"
+            value={mission.title || ''}
+            onChange={(e) => handleMissionFieldChange('title', e.target.value)}
+            style={{ width: '100%' }}
+          />
+        </label>
+        <label>
           Start Room ID:
           <input
             type="text"
@@ -45,11 +63,43 @@ export default function NodeInspector({
     );
   }
 
-  const { id, data } = selectedNode;
+  const { id, type, data } = selectedNode;
 
   const handleFieldChange = (field, value) => {
     onChange({ ...selectedNode, data: { ...data, [field]: value } });
   };
+
+  if (type === 'mission_intro') {
+    return (
+      <aside style={{ padding: 8, borderLeft: '1px solid #ccc', width: 200 }}>
+        <h3 style={{ marginTop: 0 }}>Intro Node</h3>
+        <div style={{ marginBottom: 8 }}>ID: {id}</div>
+        <label>
+          Title:
+          <input
+            type="text"
+            value={data.title || ''}
+            onChange={(e) => handleFieldChange('title', e.target.value)}
+            style={{ width: '100%' }}
+          />
+        </label>
+        <label>
+          Text:
+          <textarea
+            value={data.text || ''}
+            onChange={(e) => handleFieldChange('text', e.target.value)}
+            style={{ width: '100%', height: 80 }}
+          />
+        </label>
+        <div>Room ID: {data.room_id}</div>
+        {(!data.choices || data.choices.length === 0) && (
+          <div style={{ color: 'orange', marginTop: 8 }}>
+            Warning: Intro node has no outputs
+          </div>
+        )}
+      </aside>
+    );
+  }
 
   const handleAutoNodesChange = (e) => {
     const parts = e.target.value

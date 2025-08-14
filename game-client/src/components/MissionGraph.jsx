@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import ReactFlow, { Background, Controls } from 'reactflow';
 import 'reactflow/dist/style.css';
 import RoomNode from './RoomNode';
+import MissionIntroNode from './MissionIntroNode';
 
 export default function MissionGraph({
   nodes,
@@ -23,7 +24,7 @@ export default function MissionGraph({
   const reactFlowWrapper = useRef(null);
   const reactFlowInstance = useRef(null);
 
-  const nodeTypes = { room: RoomNode };
+  const nodeTypes = { room: RoomNode, mission_intro: MissionIntroNode };
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
@@ -43,20 +44,58 @@ export default function MissionGraph({
       });
 
       const id = `${type}-${nodes.length + 1}`;
-      const newNode = {
-        id,
-        type,
-        position,
-        data: {
-          name: 'Room',
-          art: '',
-          music: '',
-          exits: [],
-          auto_nodes: [],
-        },
-        style: { width: 200, height: 150 },
-      };
-      setNodes((nds) => nds.concat(newNode));
+
+      if (type === 'room') {
+        const newNode = {
+          id,
+          type,
+          position,
+          data: {
+            name: 'Room',
+            art: '',
+            music: '',
+            exits: [],
+            auto_nodes: [],
+          },
+          style: { width: 200, height: 150 },
+        };
+        setNodes((nds) => nds.concat(newNode));
+        return;
+      }
+
+      if (type === 'mission_intro') {
+        const rooms = reactFlowInstance.current.getNodes();
+        const parent = rooms.find((n) => {
+          if (n.type !== 'room') return false;
+          const width = n.style?.width || 200;
+          const height = n.style?.height || 150;
+          return (
+            position.x >= n.position.x &&
+            position.x <= n.position.x + width &&
+            position.y >= n.position.y &&
+            position.y <= n.position.y + height
+          );
+        });
+        if (!parent) return;
+        const newNode = {
+          id,
+          type,
+          position: {
+            x: position.x - parent.position.x,
+            y: position.y - parent.position.y,
+          },
+          data: {
+            title: '',
+            text: '',
+            room_id: parent.id,
+            choices: [],
+          },
+          parentNode: parent.id,
+          extent: 'parent',
+          style: { width: 150, height: 80 },
+        };
+        setNodes((nds) => nds.concat(newNode));
+      }
     },
     [nodes, setNodes]
   );
