@@ -16,6 +16,9 @@ export default function MissionIntroNode({ data }) {
       }}
     >
       <strong>{data.title || 'Intro'}</strong>
+      {!data.room_id && (
+        <div style={{ color: 'orange', fontSize: 12 }}>⚠ Not in room</div>
+      )}
       {(!data.choices || data.choices.length === 0) && (
         <div style={{ color: 'orange', fontSize: 12 }}>⚠ No outputs</div>
       )}

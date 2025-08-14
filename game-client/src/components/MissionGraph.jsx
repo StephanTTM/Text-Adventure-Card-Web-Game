@@ -64,8 +64,8 @@ export default function MissionGraph({
       }
 
       if (type === 'mission_intro') {
-        const rooms = reactFlowInstance.current.getNodes();
-        const parent = rooms.find((n) => {
+        const graphNodes = reactFlowInstance.current.getNodes();
+        const parent = graphNodes.find((n) => {
           if (n.type !== 'room') return false;
           const width = n.style?.width || 200;
           const height = n.style?.height || 150;
@@ -76,23 +76,24 @@ export default function MissionGraph({
             position.y <= n.position.y + height
           );
         });
-        if (!parent) return;
+
         const newNode = {
           id,
           type,
-          position: {
-            x: position.x - parent.position.x,
-            y: position.y - parent.position.y,
-          },
+          position: parent
+            ? {
+                x: position.x - parent.position.x,
+                y: position.y - parent.position.y,
+              }
+            : position,
           data: {
             title: '',
             text: '',
-            room_id: parent.id,
+            room_id: parent ? parent.id : '',
             choices: [],
           },
-          parentNode: parent.id,
-          extent: 'parent',
           style: { width: 150, height: 80 },
+          ...(parent ? { parentNode: parent.id, extent: 'parent' } : {}),
         };
         setNodes((nds) => nds.concat(newNode));
       }

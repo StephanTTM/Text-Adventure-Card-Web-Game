@@ -91,7 +91,12 @@ export default function NodeInspector({
             style={{ width: '100%', height: 80 }}
           />
         </label>
-        <div>Room ID: {data.room_id}</div>
+        <div>Room ID: {data.room_id || '(none)'}</div>
+        {!data.room_id && (
+          <div style={{ color: 'orange', marginTop: 8 }}>
+            Warning: Intro node is not in a room
+          </div>
+        )}
         {(!data.choices || data.choices.length === 0) && (
           <div style={{ color: 'orange', marginTop: 8 }}>
             Warning: Intro node has no outputs
