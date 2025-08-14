@@ -152,11 +152,7 @@ export default function MissionGraph({
   );
 
   return (
-    <div
-      style={{ flex: 1 }}
-      ref={reactFlowWrapper}
-      className={isLibraryDragging ? 'dragging-library-node' : undefined}
-    >
+    <div style={{ flex: 1, position: 'relative' }} ref={reactFlowWrapper}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -164,8 +160,6 @@ export default function MissionGraph({
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        onDrop={onDrop}
-        onDragOver={onDragOver}
         onNodeDragStop={onNodeDragStop}
         onSelectionChange={({ nodes: selected }) =>
           onNodeSelect(selected[0] || null)
@@ -176,6 +170,13 @@ export default function MissionGraph({
         <Controls />
         <Background gap={16} />
       </ReactFlow>
+      {isLibraryDragging && (
+        <div
+          className="library-drop-overlay"
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+        />
+      )}
     </div>
   );
 }

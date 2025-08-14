@@ -1,3 +1,5 @@
-.dragging-library-node .react-flow__node {
-  pointer-events: none;
+.library-drop-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1000;
 }
