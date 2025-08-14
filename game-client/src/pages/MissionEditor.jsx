@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import MissionGraph from '../components/MissionGraph';
 
 export default function MissionEditor() {
   return (
@@ -8,7 +9,8 @@ export default function MissionEditor() {
         <button style={{ marginBottom: 16 }}>Back to Menu</button>
       </Link>
       <h1>Mission Editor</h1>
-      <p>Mission editor content coming soon.</p>
+      <MissionGraph />
+      <p style={{ marginTop: 16 }}>Mission editor content coming soon.</p>
     </div>
   );
 }
