@@ -5,7 +5,10 @@ import '@reactflow/node-resizer/dist/style.css';
 export default function RoomNode({ data, selected }) {
   return (
     <div
-      onDragOver={(e) => e.preventDefault()}
+      onDragOver={(e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      }}
       style={{
         background: 'rgba(255, 255, 255, 0.9)',
         border: '1px solid #888',
