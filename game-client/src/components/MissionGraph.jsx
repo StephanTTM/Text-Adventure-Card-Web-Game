@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import ReactFlow, { Background, Controls } from 'reactflow';
 import 'reactflow/dist/style.css';
+import RoomNode from './RoomNode';
 
 export default function MissionGraph({
   nodes,
@@ -22,6 +23,8 @@ export default function MissionGraph({
   const reactFlowWrapper = useRef(null);
   const reactFlowInstance = useRef(null);
 
+  const nodeTypes = { room: RoomNode };
+
   const onDragOver = useCallback((event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
@@ -42,9 +45,10 @@ export default function MissionGraph({
       const id = `${type}-${nodes.length + 1}`;
       const newNode = {
         id,
-        type: 'default',
+        type,
         position,
         data: { label: 'Room' },
+        style: { width: 200, height: 150 },
       };
       setNodes((nds) => nds.concat(newNode));
     },
@@ -56,6 +60,7 @@ export default function MissionGraph({
       <ReactFlow
         nodes={nodes}
         edges={edges}
+        nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}

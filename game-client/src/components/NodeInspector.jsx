@@ -12,7 +12,7 @@ export default function NodeInspector({ selectedNode, onChange }) {
 
   const { id, data } = selectedNode;
 
-  const handleLabelChange = (e) => {
+  const handleNameChange = (e) => {
     onChange({ ...selectedNode, data: { ...data, label: e.target.value } });
   };
 
@@ -21,11 +21,11 @@ export default function NodeInspector({ selectedNode, onChange }) {
       <h3 style={{ marginTop: 0 }}>Inspector</h3>
       <div style={{ marginBottom: 8 }}>ID: {id}</div>
       <label>
-        Label:
+        Name:
         <input
           type="text"
           value={data.label || ''}
-          onChange={handleLabelChange}
+          onChange={handleNameChange}
           style={{ width: '100%' }}
         />
       </label>
