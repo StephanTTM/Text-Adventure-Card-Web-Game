@@ -12,6 +12,7 @@ export default function MissionEditor() {
   const [startRoomId, setStartRoomId] = useState('');
   const [missionId, setMissionId] = useState('mission-1');
   const [missionTitle, setMissionTitle] = useState('');
+  const [isLibraryDragging, setIsLibraryDragging] = useState(false);
 
   const mission = useMemo(
     () => ({
@@ -59,7 +60,10 @@ export default function MissionEditor() {
       </Link>
       <h1>Mission Editor</h1>
       <div style={{ display: 'flex', height: 600 }}>
-        <NodeLibrary />
+        <NodeLibrary
+          onDragStart={() => setIsLibraryDragging(true)}
+          onDragEnd={() => setIsLibraryDragging(false)}
+        />
         <MissionGraph
           nodes={nodes}
           edges={edges}
@@ -68,6 +72,8 @@ export default function MissionEditor() {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           onNodeSelect={(node) => setSelectedNodeId(node ? node.id : null)}
+          isLibraryDragging={isLibraryDragging}
+          onLibraryDragEnd={() => setIsLibraryDragging(false)}
         />
         <NodeInspector
           selectedNode={selectedNode}

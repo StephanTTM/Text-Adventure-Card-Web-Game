@@ -3,6 +3,7 @@ import ReactFlow, { Background, Controls } from 'reactflow';
 import 'reactflow/dist/style.css';
 import RoomNode from './RoomNode';
 import MissionIntroNode from './MissionIntroNode';
+import './MissionGraph.css';
 
 export default function MissionGraph({
   nodes,
@@ -12,6 +13,8 @@ export default function MissionGraph({
   onEdgesChange,
   onConnect,
   onNodeSelect,
+  isLibraryDragging,
+  onLibraryDragEnd,
 }) {
   if (
     typeof window === 'undefined' ||
@@ -57,6 +60,10 @@ export default function MissionGraph({
       });
 
       const id = `${type}-${nodes.length + 1}`;
+      const maxZ = nodes.reduce(
+        (max, n) => Math.max(max, n.style?.zIndex || 0),
+        0
+      );
 
       if (type === 'room') {
         const newNode = {
@@ -70,9 +77,10 @@ export default function MissionGraph({
             exits: [],
             auto_nodes: [],
           },
-          style: { width: 200, height: 150, zIndex: 0 },
+          style: { width: 200, height: 150, zIndex: maxZ + 1 },
         };
         setNodes((nds) => nds.concat(newNode));
+        onLibraryDragEnd?.();
         return;
       }
 
@@ -95,13 +103,14 @@ export default function MissionGraph({
             room_id: parent ? parent.id : '',
             choices: [],
           },
-          style: { width: 150, height: 80, zIndex: 1 },
+          style: { width: 150, height: 80, zIndex: maxZ + 1 },
           ...(parent ? { parentNode: parent.id } : {}),
         };
         setNodes((nds) => nds.concat(newNode));
+        onLibraryDragEnd?.();
       }
     },
-    [nodes, setNodes]
+    [nodes, setNodes, onLibraryDragEnd]
   );
 
   const onNodeDragStop = useCallback(
@@ -143,7 +152,11 @@ export default function MissionGraph({
   );
 
   return (
-    <div style={{ flex: 1 }} ref={reactFlowWrapper}>
+    <div
+      style={{ flex: 1 }}
+      ref={reactFlowWrapper}
+      className={isLibraryDragging ? 'dragging-library-node' : undefined}
+    >
       <ReactFlow
         nodes={nodes}
         edges={edges}

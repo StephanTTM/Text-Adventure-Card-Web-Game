@@ -1,9 +1,14 @@
 import React from 'react';
 
-export default function NodeLibrary() {
-  const onDragStart = (event, nodeType) => {
+export default function NodeLibrary({ onDragStart: onStart, onDragEnd: onEnd }) {
+  const handleDragStart = (event, nodeType) => {
     event.dataTransfer.setData('application/reactflow', nodeType);
     event.dataTransfer.effectAllowed = 'move';
+    if (onStart) onStart();
+  };
+
+  const handleDragEnd = () => {
+    if (onEnd) onEnd();
   };
 
   return (
@@ -11,7 +16,8 @@ export default function NodeLibrary() {
       <h3 style={{ marginTop: 0 }}>Nodes</h3>
       <div
         style={{ padding: 8, border: '1px solid #999', borderRadius: 4, cursor: 'grab' }}
-        onDragStart={(event) => onDragStart(event, 'room')}
+        onDragStart={(event) => handleDragStart(event, 'room')}
+        onDragEnd={handleDragEnd}
         draggable
       >
         Room Node
@@ -24,7 +30,8 @@ export default function NodeLibrary() {
           cursor: 'grab',
           marginTop: 8,
         }}
-        onDragStart={(event) => onDragStart(event, 'mission_intro')}
+        onDragStart={(event) => handleDragStart(event, 'mission_intro')}
+        onDragEnd={handleDragEnd}
         draggable
       >
         Mission Intro Node
