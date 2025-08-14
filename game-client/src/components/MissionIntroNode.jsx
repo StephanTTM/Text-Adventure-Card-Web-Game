@@ -1,6 +1,8 @@
 import React from 'react';
+import { Handle } from 'reactflow';
 
-export default function MissionIntroNode({ data }) {
+export default function MissionIntroNode({ id, data }) {
+  const outputCount = data.choices?.length || 0;
   return (
     <div
       style={{
@@ -13,6 +15,7 @@ export default function MissionIntroNode({ data }) {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
+        position: 'relative',
       }}
     >
       <strong>{data.title || 'Intro'}</strong>
@@ -22,6 +25,15 @@ export default function MissionIntroNode({ data }) {
       {(!data.choices || data.choices.length === 0) && (
         <div style={{ color: 'orange', fontSize: 12 }}>⚠ No outputs</div>
       )}
+      {data.choices?.map((_, idx) => (
+        <Handle
+          key={idx}
+          type="source"
+          position="bottom"
+          id={`${id}-out-${idx}`}
+          style={{ left: `${((idx + 1) / (outputCount + 1)) * 100}%` }}
+        />
+      ))}
     </div>
   );
 }

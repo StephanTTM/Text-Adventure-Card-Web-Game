@@ -6,6 +6,7 @@ export default function NodeInspector({
   mission,
   onMissionChange,
   onAddEdge,
+  onRemoveEdge,
 }) {
   if (!selectedNode) {
     const handleMissionFieldChange = (field, value) => {
@@ -81,7 +82,11 @@ export default function NodeInspector({
       const newChoices = [...(data.choices || [])];
       const outcomes = [...(newChoices[choiceIdx].outcomes || [])];
       const prev = outcomes[outcomeIdx];
-      const prevValue = prev[Object.keys(prev)[0]] || '';
+      const prevType = Object.keys(prev)[0] || 'change_node';
+      const prevValue = prev[prevType] || '';
+      if (prevType === 'change_node' && prevValue) {
+        onRemoveEdge?.(id, prevValue);
+      }
       outcomes[outcomeIdx] = { [newType]: prevValue };
       newChoices[choiceIdx] = { ...newChoices[choiceIdx], outcomes };
       handleFieldChange('choices', newChoices);
@@ -95,11 +100,17 @@ export default function NodeInspector({
       const newChoices = [...(data.choices || [])];
       const outcomes = [...(newChoices[choiceIdx].outcomes || [])];
       const type = Object.keys(outcomes[outcomeIdx])[0] || 'change_node';
+      const prevValue = outcomes[outcomeIdx][type] || '';
       outcomes[outcomeIdx] = { [type]: value };
       newChoices[choiceIdx] = { ...newChoices[choiceIdx], outcomes };
       handleFieldChange('choices', newChoices);
-      if (type === 'change_node' && value) {
-        onAddEdge?.(id, value);
+      if (type === 'change_node') {
+        if (prevValue && prevValue !== value) {
+          onRemoveEdge?.(id, prevValue);
+        }
+        if (value) {
+          onAddEdge?.(id, value);
+        }
       }
     };
 
@@ -107,6 +118,19 @@ export default function NodeInspector({
       const newChoices = [...(data.choices || [])];
       newChoices.push({ label: '', outcomes: [{ change_node: '' }] });
       handleFieldChange('choices', newChoices);
+    };
+
+    const removeChoice = (idx) => {
+      const choice = data.choices?.[idx];
+      const newChoices = (data.choices || []).filter((_, i) => i !== idx);
+      handleFieldChange('choices', newChoices);
+      choice?.outcomes?.forEach((outcome) => {
+        const type = Object.keys(outcome)[0];
+        const target = outcome[type];
+        if (type === 'change_node' && target) {
+          onRemoveEdge?.(id, target);
+        }
+      });
     };
 
     return (
@@ -169,6 +193,13 @@ export default function NodeInspector({
                   </div>
                 );
               })}
+              <button
+                type="button"
+                onClick={() => removeChoice(idx)}
+                style={{ marginTop: 4 }}
+              >
+                Remove Choice
+              </button>
             </div>
           ))}
           <button onClick={addChoice}>Add Choice</button>

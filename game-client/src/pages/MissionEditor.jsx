@@ -63,6 +63,15 @@ export default function MissionEditor() {
     [nodes, setEdges]
   );
 
+  const handleOutcomeDisconnection = useCallback(
+    (sourceId, targetId) => {
+      setEdges((eds) =>
+        eds.filter((e) => !(e.source === sourceId && e.target === targetId))
+      );
+    },
+    [setEdges]
+  );
+
   const selectedNode =
     nodes.find((node) => node.id === selectedNodeId) || null;
 
@@ -94,6 +103,7 @@ export default function MissionEditor() {
           mission={mission}
           onMissionChange={handleMissionChange}
           onAddEdge={handleOutcomeConnection}
+          onRemoveEdge={handleOutcomeDisconnection}
         />
       </div>
     </div>
