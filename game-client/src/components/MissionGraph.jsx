@@ -26,6 +26,19 @@ export default function MissionGraph({
 
   const nodeTypes = { room: RoomNode, mission_intro: MissionIntroNode };
 
+  const findRoomAtPosition = (position, graphNodes) =>
+    graphNodes.find((n) => {
+      if (n.type !== 'room') return false;
+      const width = n.style?.width || 200;
+      const height = n.style?.height || 150;
+      return (
+        position.x >= n.position.x &&
+        position.x <= n.position.x + width &&
+        position.y >= n.position.y &&
+        position.y <= n.position.y + height
+      );
+    });
+
   const onDragOver = useCallback((event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
@@ -57,7 +70,7 @@ export default function MissionGraph({
             exits: [],
             auto_nodes: [],
           },
-          style: { width: 200, height: 150 },
+          style: { width: 200, height: 150, zIndex: 0 },
         };
         setNodes((nds) => nds.concat(newNode));
         return;
@@ -65,17 +78,7 @@ export default function MissionGraph({
 
       if (type === 'mission_intro') {
         const graphNodes = reactFlowInstance.current.getNodes();
-        const parent = graphNodes.find((n) => {
-          if (n.type !== 'room') return false;
-          const width = n.style?.width || 200;
-          const height = n.style?.height || 150;
-          return (
-            position.x >= n.position.x &&
-            position.x <= n.position.x + width &&
-            position.y >= n.position.y &&
-            position.y <= n.position.y + height
-          );
-        });
+        const parent = findRoomAtPosition(position, graphNodes);
 
         const newNode = {
           id,
@@ -92,13 +95,53 @@ export default function MissionGraph({
             room_id: parent ? parent.id : '',
             choices: [],
           },
-          style: { width: 150, height: 80 },
+          style: { width: 150, height: 80, zIndex: 1 },
           ...(parent ? { parentNode: parent.id, extent: 'parent' } : {}),
         };
         setNodes((nds) => nds.concat(newNode));
       }
     },
     [nodes, setNodes]
+  );
+
+  const onNodeDragStop = useCallback(
+    (event, node) => {
+      if (node.type !== 'mission_intro') return;
+
+      const graphNodes = reactFlowInstance.current.getNodes();
+      const position = node.positionAbsolute || node.position;
+      const parent = findRoomAtPosition(position, graphNodes);
+
+      setNodes((nds) =>
+        nds.map((n) => {
+          if (n.id !== node.id) return n;
+          const base = {
+            ...n,
+            style: { ...n.style, zIndex: 1 },
+          };
+          if (parent) {
+            return {
+              ...base,
+              parentNode: parent.id,
+              extent: 'parent',
+              position: {
+                x: position.x - parent.position.x,
+                y: position.y - parent.position.y,
+              },
+              data: { ...n.data, room_id: parent.id },
+            };
+          }
+          return {
+            ...base,
+            parentNode: undefined,
+            extent: undefined,
+            position,
+            data: { ...n.data, room_id: '' },
+          };
+        })
+      );
+    },
+    [setNodes]
   );
 
   return (
@@ -112,6 +155,7 @@ export default function MissionGraph({
         onConnect={onConnect}
         onDrop={onDrop}
         onDragOver={onDragOver}
+        onNodeDragStop={onNodeDragStop}
         onSelectionChange={({ nodes: selected }) =>
           onNodeSelect(selected[0] || null)
         }
