@@ -60,10 +60,6 @@ export default function MissionGraph({
       });
 
       const id = `${type}-${nodes.length + 1}`;
-      const maxZ = nodes.reduce(
-        (max, n) => Math.max(max, n.style?.zIndex || 0),
-        0
-      );
 
       if (type === 'room') {
         const newNode = {
@@ -77,7 +73,7 @@ export default function MissionGraph({
             exits: [],
             auto_nodes: [],
           },
-          style: { width: 200, height: 150, zIndex: maxZ + 1 },
+          style: { width: 200, height: 150, zIndex: 0 },
         };
         setNodes((nds) => nds.concat(newNode));
         onLibraryDragEnd?.();
@@ -103,7 +99,7 @@ export default function MissionGraph({
             room_id: parent ? parent.id : '',
             choices: [],
           },
-          style: { width: 150, height: 80, zIndex: maxZ + 1 },
+          style: { width: 150, height: 80, zIndex: 1 },
           ...(parent ? { parentNode: parent.id } : {}),
         };
         setNodes((nds) => nds.concat(newNode));
