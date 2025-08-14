@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import MissionGraph from '../components/MissionGraph';
 import NodeLibrary from '../components/NodeLibrary';
@@ -9,6 +9,34 @@ export default function MissionEditor() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
+  const [startRoomId, setStartRoomId] = useState('');
+  const [missionId, setMissionId] = useState('mission-1');
+  const [missionTitle, setMissionTitle] = useState('');
+  const [isLibraryDragging, setIsLibraryDragging] = useState(false);
+
+  const mission = useMemo(
+    () => ({
+      id: missionId,
+      title: missionTitle,
+      start_room_id: startRoomId,
+      rooms: nodes
+        .filter(({ type }) => type === 'room')
+        .map(({ id, data }) => ({ id, ...data })),
+      nodes: nodes
+        .filter(({ type }) => type !== 'room')
+        .map(({ id, type, data }) => ({ id, type, ...data })),
+    }),
+    [missionId, missionTitle, startRoomId, nodes]
+  );
+
+  const handleMissionChange = useCallback(
+    (updatedMission) => {
+      setStartRoomId(updatedMission.start_room_id || '');
+      setMissionTitle(updatedMission.title || '');
+      if (updatedMission.id) setMissionId(updatedMission.id);
+    },
+    []
+  );
 
   const onConnect = useCallback(
     (connection) => setEdges((eds) => addEdge(connection, eds)),
@@ -32,7 +60,10 @@ export default function MissionEditor() {
       </Link>
       <h1>Mission Editor</h1>
       <div style={{ display: 'flex', height: 600 }}>
-        <NodeLibrary />
+        <NodeLibrary
+          onDragStart={() => setIsLibraryDragging(true)}
+          onDragEnd={() => setIsLibraryDragging(false)}
+        />
         <MissionGraph
           nodes={nodes}
           edges={edges}
@@ -41,8 +72,15 @@ export default function MissionEditor() {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           onNodeSelect={(node) => setSelectedNodeId(node ? node.id : null)}
+          isLibraryDragging={isLibraryDragging}
+          onLibraryDragEnd={() => setIsLibraryDragging(false)}
         />
-        <NodeInspector selectedNode={selectedNode} onChange={handleNodeUpdate} />
+        <NodeInspector
+          selectedNode={selectedNode}
+          onChange={handleNodeUpdate}
+          mission={mission}
+          onMissionChange={handleMissionChange}
+        />
       </div>
       <p style={{ marginTop: 16 }}>Mission editor content coming soon.</p>
     </div>

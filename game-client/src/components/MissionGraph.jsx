@@ -2,6 +2,8 @@ import React, { useCallback, useRef } from 'react';
 import ReactFlow, { Background, Controls } from 'reactflow';
 import 'reactflow/dist/style.css';
 import RoomNode from './RoomNode';
+import MissionIntroNode from './MissionIntroNode';
+import './MissionGraph.css';
 
 export default function MissionGraph({
   nodes,
@@ -11,6 +13,8 @@ export default function MissionGraph({
   onEdgesChange,
   onConnect,
   onNodeSelect,
+  isLibraryDragging,
+  onLibraryDragEnd,
 }) {
   if (
     typeof window === 'undefined' ||
@@ -23,7 +27,20 @@ export default function MissionGraph({
   const reactFlowWrapper = useRef(null);
   const reactFlowInstance = useRef(null);
 
-  const nodeTypes = { room: RoomNode };
+  const nodeTypes = { room: RoomNode, mission_intro: MissionIntroNode };
+
+  const findRoomAtPosition = (position, graphNodes) =>
+    graphNodes.find((n) => {
+      if (n.type !== 'room') return false;
+      const width = n.width || n.style?.width || 200;
+      const height = n.height || n.style?.height || 150;
+      return (
+        position.x >= n.position.x &&
+        position.x <= n.position.x + width &&
+        position.y >= n.position.y &&
+        position.y <= n.position.y + height
+      );
+    });
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
@@ -43,26 +60,95 @@ export default function MissionGraph({
       });
 
       const id = `${type}-${nodes.length + 1}`;
-      const newNode = {
-        id,
-        type,
-        position,
-        data: {
-          name: 'Room',
-          art: '',
-          music: '',
-          exits: [],
-          auto_nodes: [],
-        },
-        style: { width: 200, height: 150 },
-      };
-      setNodes((nds) => nds.concat(newNode));
+
+      if (type === 'room') {
+        const newNode = {
+          id,
+          type,
+          position,
+          data: {
+            name: 'Room',
+            art: '',
+            music: '',
+            exits: [],
+            auto_nodes: [],
+          },
+          style: { width: 200, height: 150, zIndex: 0 },
+        };
+        setNodes((nds) => nds.concat(newNode));
+        onLibraryDragEnd?.();
+        return;
+      }
+
+      if (type === 'mission_intro') {
+        const graphNodes = reactFlowInstance.current.getNodes();
+        const parent = findRoomAtPosition(position, graphNodes);
+
+        const newNode = {
+          id,
+          type,
+          position: parent
+            ? {
+                x: position.x - parent.position.x,
+                y: position.y - parent.position.y,
+              }
+            : position,
+          data: {
+            title: '',
+            text: '',
+            room_id: parent ? parent.id : '',
+            choices: [],
+          },
+          style: { width: 150, height: 80, zIndex: 1 },
+          ...(parent ? { parentNode: parent.id } : {}),
+        };
+        setNodes((nds) => nds.concat(newNode));
+        onLibraryDragEnd?.();
+      }
     },
-    [nodes, setNodes]
+    [nodes, setNodes, onLibraryDragEnd]
+  );
+
+  const onNodeDragStop = useCallback(
+    (event, node) => {
+      if (node.type !== 'mission_intro') return;
+
+      const graphNodes = reactFlowInstance.current.getNodes();
+      const position = node.positionAbsolute || node.position;
+      const parent = findRoomAtPosition(position, graphNodes);
+
+      setNodes((nds) =>
+        nds.map((n) => {
+          if (n.id !== node.id) return n;
+          const base = {
+            ...n,
+            style: { ...n.style, zIndex: 1 },
+          };
+          if (parent) {
+            return {
+              ...base,
+              parentNode: parent.id,
+              position: {
+                x: position.x - parent.position.x,
+                y: position.y - parent.position.y,
+              },
+              data: { ...n.data, room_id: parent.id },
+            };
+          }
+          return {
+            ...base,
+            parentNode: undefined,
+            position,
+            data: { ...n.data, room_id: '' },
+          };
+        })
+      );
+    },
+    [setNodes]
   );
 
   return (
-    <div style={{ flex: 1 }} ref={reactFlowWrapper}>
+    <div style={{ flex: 1, position: 'relative' }} ref={reactFlowWrapper}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -70,8 +156,7 @@ export default function MissionGraph({
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        onDrop={onDrop}
-        onDragOver={onDragOver}
+        onNodeDragStop={onNodeDragStop}
         onSelectionChange={({ nodes: selected }) =>
           onNodeSelect(selected[0] || null)
         }
@@ -81,6 +166,13 @@ export default function MissionGraph({
         <Controls />
         <Background gap={16} />
       </ReactFlow>
+      {isLibraryDragging && (
+        <div
+          className="library-drop-overlay"
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+        />
+      )}
     </div>
   );
 }
