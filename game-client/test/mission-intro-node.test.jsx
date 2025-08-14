@@ -5,7 +5,7 @@ import MissionIntroNode from '../src/components/MissionIntroNode';
 import { ReactFlowProvider } from 'reactflow';
 
 describe('MissionIntroNode', () => {
-  it('renders without input handles and aligns choice labels to the right', () => {
+  it('renders without input handles and keeps choice labels inside on the right edge', () => {
     const data = { title: 'Intro', room_id: 'room-1', choices: [{ label: 'Go' }] };
     const { container, getByText } = render(
       <ReactFlowProvider>
@@ -18,7 +18,7 @@ describe('MissionIntroNode', () => {
 
     const label = getByText('Go');
     expect(label.style.position).toBe('absolute');
-    expect(label.style.left).toBe('100%');
-    expect(label.style.marginLeft).toBe('4px');
+    expect(label.style.right).toBe('0px');
+    expect(label.style.left).toBe('');
   });
 });

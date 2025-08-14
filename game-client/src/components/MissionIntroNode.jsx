@@ -42,8 +42,7 @@ export default function MissionIntroNode({ id, data }) {
           <span
             style={{
               position: 'absolute',
-              left: '100%',
-              marginLeft: 4,
+              right: 0,
               top: '50%',
               transform: 'translateY(-50%)',
               whiteSpace: 'nowrap',
