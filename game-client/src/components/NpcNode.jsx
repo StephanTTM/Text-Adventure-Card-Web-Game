@@ -1,8 +1,8 @@
 import React from 'react';
-import { Handle, useStoreState } from 'reactflow';
+import { Handle, useStore } from 'reactflow';
 
 export default function NpcNode({ id, data }) {
-  const hasInput = useStoreState((state) =>
+  const hasInput = useStore((state) =>
     state.edges.some((e) => e.target === id)
   );
 
