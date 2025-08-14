@@ -29,8 +29,8 @@ export default function MissionGraph({
   const findRoomAtPosition = (position, graphNodes) =>
     graphNodes.find((n) => {
       if (n.type !== 'room') return false;
-      const width = n.style?.width || 200;
-      const height = n.style?.height || 150;
+      const width = n.width || n.style?.width || 200;
+      const height = n.height || n.style?.height || 150;
       return (
         position.x >= n.position.x &&
         position.x <= n.position.x + width &&
@@ -96,7 +96,7 @@ export default function MissionGraph({
             choices: [],
           },
           style: { width: 150, height: 80, zIndex: 1 },
-          ...(parent ? { parentNode: parent.id, extent: 'parent' } : {}),
+          ...(parent ? { parentNode: parent.id } : {}),
         };
         setNodes((nds) => nds.concat(newNode));
       }
@@ -123,7 +123,6 @@ export default function MissionGraph({
             return {
               ...base,
               parentNode: parent.id,
-              extent: 'parent',
               position: {
                 x: position.x - parent.position.x,
                 y: position.y - parent.position.y,
@@ -134,7 +133,6 @@ export default function MissionGraph({
           return {
             ...base,
             parentNode: undefined,
-            extent: undefined,
             position,
             data: { ...n.data, room_id: '' },
           };
