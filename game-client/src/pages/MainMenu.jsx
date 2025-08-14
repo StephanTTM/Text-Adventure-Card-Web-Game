@@ -89,7 +89,9 @@ export default function MainMenu({ player }) {
         </li>
         <li>
           <Link to="/mission-editor">
-            <button style={buttonStyle}>Mission Editor</button>
+            <button style={buttonStyle} aria-label="Open Mission Editor">
+              Mission Editor
+            </button>
           </Link>
         </li>
       </ul>
