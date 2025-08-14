@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import MissionGraph from '../components/MissionGraph';
 import NodeLibrary from '../components/NodeLibrary';
@@ -9,6 +9,21 @@ export default function MissionEditor() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
+  const [startRoomId, setStartRoomId] = useState('');
+
+  const mission = useMemo(
+    () => ({
+      start_room_id: startRoomId,
+      rooms: nodes.map(({ id, data }) => ({ id, ...data })),
+      nodes: nodes.map(({ id, data }) => ({ id, ...data })),
+    }),
+    [startRoomId, nodes]
+  );
+
+  const handleMissionChange = useCallback(
+    (updatedMission) => setStartRoomId(updatedMission.start_room_id || ''),
+    []
+  );
 
   const onConnect = useCallback(
     (connection) => setEdges((eds) => addEdge(connection, eds)),
@@ -42,7 +57,12 @@ export default function MissionEditor() {
           onConnect={onConnect}
           onNodeSelect={(node) => setSelectedNodeId(node ? node.id : null)}
         />
-        <NodeInspector selectedNode={selectedNode} onChange={handleNodeUpdate} />
+        <NodeInspector
+          selectedNode={selectedNode}
+          onChange={handleNodeUpdate}
+          mission={mission}
+          onMissionChange={handleMissionChange}
+        />
       </div>
       <p style={{ marginTop: 16 }}>Mission editor content coming soon.</p>
     </div>

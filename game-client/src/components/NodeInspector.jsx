@@ -1,11 +1,46 @@
 import React from 'react';
 
-export default function NodeInspector({ selectedNode, onChange }) {
+export default function NodeInspector({
+  selectedNode,
+  onChange,
+  mission,
+  onMissionChange,
+}) {
   if (!selectedNode) {
+    const handleMissionFieldChange = (field, value) => {
+      onMissionChange({ ...mission, [field]: value });
+    };
+
     return (
       <aside style={{ padding: 8, borderLeft: '1px solid #ccc', width: 200 }}>
-        <h3 style={{ marginTop: 0 }}>Inspector</h3>
-        <div>No node selected</div>
+        <h3 style={{ marginTop: 0 }}>Mission</h3>
+        <label>
+          Start Room ID:
+          <input
+            type="text"
+            value={mission.start_room_id || ''}
+            onChange={(e) =>
+              handleMissionFieldChange('start_room_id', e.target.value)
+            }
+            style={{ width: '100%' }}
+          />
+        </label>
+        <label>
+          Rooms:
+          <textarea
+            value={JSON.stringify(mission.rooms || [], null, 2)}
+            readOnly
+            style={{ width: '100%', height: 80 }}
+          />
+        </label>
+        <label>
+          Nodes:
+          <textarea
+            value={JSON.stringify(mission.nodes || [], null, 2)}
+            readOnly
+            style={{ width: '100%', height: 80 }}
+          />
+        </label>
       </aside>
     );
   }
