@@ -32,6 +32,7 @@ export default function MissionIntroNode({ id, data }) {
             position: 'relative',
             fontSize: 12,
             overflow: 'visible',
+            width: '100%',
           }}
         >
           <Handle

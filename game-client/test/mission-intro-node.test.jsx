@@ -14,7 +14,9 @@ describe('MissionIntroNode', () => {
     );
 
     expect(container.querySelector('.react-flow__handle-left')).toBeNull();
-    expect(container.querySelector('.react-flow__handle-right')).not.toBeNull();
+    const handle = container.querySelector('.react-flow__handle-right');
+    expect(handle).not.toBeNull();
+    expect(handle.parentElement.style.width).toBe('100%');
 
     const label = getByText('Go');
     expect(label.style.position).toBe('absolute');
