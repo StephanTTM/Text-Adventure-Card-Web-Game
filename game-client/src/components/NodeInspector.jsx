@@ -5,6 +5,7 @@ export default function NodeInspector({
   onChange,
   mission,
   onMissionChange,
+  onAddEdge,
 }) {
   if (!selectedNode) {
     const handleMissionFieldChange = (field, value) => {
@@ -97,6 +98,9 @@ export default function NodeInspector({
       outcomes[outcomeIdx] = { [type]: value };
       newChoices[choiceIdx] = { ...newChoices[choiceIdx], outcomes };
       handleFieldChange('choices', newChoices);
+      if (type === 'change_node' && value) {
+        onAddEdge?.(id, value);
+      }
     };
 
     const addChoice = () => {
@@ -178,6 +182,38 @@ export default function NodeInspector({
         {(!data.choices || data.choices.length === 0) && (
           <div style={{ color: 'orange', marginTop: 8 }}>
             Warning: Intro node has no outputs
+          </div>
+        )}
+      </aside>
+    );
+  }
+
+  if (type === 'npc') {
+    return (
+      <aside style={{ padding: 8, borderLeft: '1px solid #ccc', width: 200 }}>
+        <h3 style={{ marginTop: 0 }}>NPC Node</h3>
+        <div style={{ marginBottom: 8 }}>ID: {id}</div>
+        <label>
+          Name:
+          <input
+            type="text"
+            value={data.name || ''}
+            onChange={(e) => handleFieldChange('name', e.target.value)}
+            style={{ width: '100%' }}
+          />
+        </label>
+        <label>
+          Text:
+          <textarea
+            value={data.text || ''}
+            onChange={(e) => handleFieldChange('text', e.target.value)}
+            style={{ width: '100%', height: 80 }}
+          />
+        </label>
+        <div>Room ID: {data.room_id || '(none)'}</div>
+        {!data.room_id && (
+          <div style={{ color: 'orange', marginTop: 8 }}>
+            Warning: NPC node is not in a room
           </div>
         )}
       </aside>

@@ -42,5 +42,6 @@ describe('App navigation', () => {
 
     fireEvent.click(screen.getByText('Mission Editor'));
     expect(await screen.findByText('Mission Editor')).toBeTruthy();
+    expect(await screen.findByText('NPC Node')).toBeTruthy();
   });
 });

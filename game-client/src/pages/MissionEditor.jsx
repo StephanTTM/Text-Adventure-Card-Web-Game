@@ -50,6 +50,19 @@ export default function MissionEditor() {
     [setNodes]
   );
 
+  const handleOutcomeConnection = useCallback(
+    (sourceId, targetId) => {
+      if (!nodes.some((n) => n.id === targetId)) return;
+      setEdges((eds) => {
+        if (eds.some((e) => e.source === sourceId && e.target === targetId)) {
+          return eds;
+        }
+        return addEdge({ source: sourceId, target: targetId }, eds);
+      });
+    },
+    [nodes, setEdges]
+  );
+
   const selectedNode =
     nodes.find((node) => node.id === selectedNodeId) || null;
 
@@ -80,6 +93,7 @@ export default function MissionEditor() {
           onChange={handleNodeUpdate}
           mission={mission}
           onMissionChange={handleMissionChange}
+          onAddEdge={handleOutcomeConnection}
         />
       </div>
     </div>
