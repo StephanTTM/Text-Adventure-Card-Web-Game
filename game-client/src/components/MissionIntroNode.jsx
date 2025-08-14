@@ -18,7 +18,6 @@ export default function MissionIntroNode({ id, data }) {
         gap: 4,
       }}
     >
-      <Handle type="target" position="left" />
       <strong>{data.title || 'Intro'}</strong>
       {!data.room_id && (
         <div style={{ color: 'orange', fontSize: 12 }}>⚠ Not in room</div>
@@ -31,18 +30,27 @@ export default function MissionIntroNode({ id, data }) {
           key={idx}
           style={{
             position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
             fontSize: 12,
-            paddingRight: 8,
+            overflow: 'visible',
           }}
         >
-          <span>{choice.label || `Choice ${idx + 1}`}</span>
           <Handle
             type="source"
             position="right"
             id={`${id}-out-${idx}`}
           />
+          <span
+            style={{
+              position: 'absolute',
+              left: '100%',
+              marginLeft: 4,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {choice.label || `Choice ${idx + 1}`}
+          </span>
         </div>
       ))}
     </div>
