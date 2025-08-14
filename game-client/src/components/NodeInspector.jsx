@@ -70,6 +70,41 @@ export default function NodeInspector({
   };
 
   if (type === 'mission_intro') {
+    const handleChoiceLabelChange = (idx, value) => {
+      const newChoices = [...(data.choices || [])];
+      newChoices[idx] = { ...newChoices[idx], label: value };
+      handleFieldChange('choices', newChoices);
+    };
+
+    const handleOutcomeTypeChange = (choiceIdx, outcomeIdx, newType) => {
+      const newChoices = [...(data.choices || [])];
+      const outcomes = [...(newChoices[choiceIdx].outcomes || [])];
+      const prev = outcomes[outcomeIdx];
+      const prevValue = prev[Object.keys(prev)[0]] || '';
+      outcomes[outcomeIdx] = { [newType]: prevValue };
+      newChoices[choiceIdx] = { ...newChoices[choiceIdx], outcomes };
+      handleFieldChange('choices', newChoices);
+    };
+
+    const handleOutcomeNodeChange = (
+      choiceIdx,
+      outcomeIdx,
+      value
+    ) => {
+      const newChoices = [...(data.choices || [])];
+      const outcomes = [...(newChoices[choiceIdx].outcomes || [])];
+      const type = Object.keys(outcomes[outcomeIdx])[0] || 'change_node';
+      outcomes[outcomeIdx] = { [type]: value };
+      newChoices[choiceIdx] = { ...newChoices[choiceIdx], outcomes };
+      handleFieldChange('choices', newChoices);
+    };
+
+    const addChoice = () => {
+      const newChoices = [...(data.choices || [])];
+      newChoices.push({ label: '', outcomes: [{ change_node: '' }] });
+      handleFieldChange('choices', newChoices);
+    };
+
     return (
       <aside style={{ padding: 8, borderLeft: '1px solid #ccc', width: 200 }}>
         <h3 style={{ marginTop: 0 }}>Intro Node</h3>
@@ -91,6 +126,49 @@ export default function NodeInspector({
             style={{ width: '100%', height: 80 }}
           />
         </label>
+        <div style={{ marginTop: 8 }}>
+          <h4 style={{ margin: '8px 0 4px' }}>Choices</h4>
+          {data.choices?.map((choice, idx) => (
+            <div key={idx} style={{ marginBottom: 8 }}>
+              <input
+                type="text"
+                value={choice.label || ''}
+                onChange={(e) => handleChoiceLabelChange(idx, e.target.value)}
+                style={{ width: '100%', marginBottom: 4 }}
+                placeholder={`Choice ${idx + 1}`}
+              />
+              {choice.outcomes?.map((outcome, oIdx) => {
+                const type = Object.keys(outcome)[0] || 'change_node';
+                return (
+                  <div
+                    key={oIdx}
+                    style={{ display: 'flex', marginBottom: 4 }}
+                  >
+                    <select
+                      value={type}
+                      onChange={(e) =>
+                        handleOutcomeTypeChange(idx, oIdx, e.target.value)
+                      }
+                      style={{ flex: 1, marginRight: 4 }}
+                    >
+                      <option value="change_node">Change Node</option>
+                    </select>
+                    <input
+                      type="text"
+                      value={outcome[type] || ''}
+                      onChange={(e) =>
+                        handleOutcomeNodeChange(idx, oIdx, e.target.value)
+                      }
+                      style={{ flex: 1 }}
+                      placeholder="Node ID"
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+          <button onClick={addChoice}>Add Choice</button>
+        </div>
         <div>Room ID: {data.room_id || '(none)'}</div>
         {!data.room_id && (
           <div style={{ color: 'orange', marginTop: 8 }}>

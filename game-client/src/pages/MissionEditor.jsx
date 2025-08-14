@@ -82,7 +82,6 @@ export default function MissionEditor() {
           onMissionChange={handleMissionChange}
         />
       </div>
-      <p style={{ marginTop: 16 }}>Mission editor content coming soon.</p>
     </div>
   );
 }
