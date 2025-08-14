@@ -3,6 +3,7 @@ import ReactFlow, { Background, Controls } from 'reactflow';
 import 'reactflow/dist/style.css';
 import RoomNode from './RoomNode';
 import MissionIntroNode from './MissionIntroNode';
+import NpcNode from './NpcNode';
 import './MissionGraph.css';
 
 export default function MissionGraph({
@@ -27,7 +28,7 @@ export default function MissionGraph({
   const reactFlowWrapper = useRef(null);
   const reactFlowInstance = useRef(null);
 
-  const nodeTypes = { room: RoomNode, mission_intro: MissionIntroNode };
+  const nodeTypes = { room: RoomNode, mission_intro: MissionIntroNode, npc: NpcNode };
 
   const findRoomAtPosition = (position, graphNodes) =>
     graphNodes.find((n) => {
@@ -73,14 +74,14 @@ export default function MissionGraph({
             exits: [],
             auto_nodes: [],
           },
-          style: { width: 200, height: 150, zIndex: 0 },
+          style: { width: 200, height: 150, zIndex: -1 },
         };
         setNodes((nds) => nds.concat(newNode));
         onLibraryDragEnd?.();
         return;
       }
 
-      if (type === 'mission_intro') {
+      if (type === 'mission_intro' || type === 'npc') {
         const graphNodes = reactFlowInstance.current.getNodes();
         const parent = findRoomAtPosition(position, graphNodes);
 
@@ -93,12 +94,19 @@ export default function MissionGraph({
                 y: position.y - parent.position.y,
               }
             : position,
-          data: {
-            title: '',
-            text: '',
-            room_id: parent ? parent.id : '',
-            choices: [],
-          },
+          data:
+            type === 'mission_intro'
+              ? {
+                  title: '',
+                  text: '',
+                  room_id: parent ? parent.id : '',
+                  choices: [],
+                }
+              : {
+                  name: '',
+                  text: '',
+                  room_id: parent ? parent.id : '',
+                },
           style: { width: 150, height: 80, zIndex: 1 },
           ...(parent ? { parentNode: parent.id } : {}),
         };
@@ -111,7 +119,7 @@ export default function MissionGraph({
 
   const onNodeDragStop = useCallback(
     (event, node) => {
-      if (node.type !== 'mission_intro') return;
+      if (node.type !== 'mission_intro' && node.type !== 'npc') return;
 
       const graphNodes = reactFlowInstance.current.getNodes();
       const position = node.positionAbsolute || node.position;

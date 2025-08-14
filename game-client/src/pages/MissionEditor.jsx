@@ -50,6 +50,28 @@ export default function MissionEditor() {
     [setNodes]
   );
 
+  const handleOutcomeConnection = useCallback(
+    (sourceId, targetId) => {
+      if (!nodes.some((n) => n.id === targetId)) return;
+      setEdges((eds) => {
+        if (eds.some((e) => e.source === sourceId && e.target === targetId)) {
+          return eds;
+        }
+        return addEdge({ source: sourceId, target: targetId }, eds);
+      });
+    },
+    [nodes, setEdges]
+  );
+
+  const handleOutcomeDisconnection = useCallback(
+    (sourceId, targetId) => {
+      setEdges((eds) =>
+        eds.filter((e) => !(e.source === sourceId && e.target === targetId))
+      );
+    },
+    [setEdges]
+  );
+
   const selectedNode =
     nodes.find((node) => node.id === selectedNodeId) || null;
 
@@ -80,9 +102,10 @@ export default function MissionEditor() {
           onChange={handleNodeUpdate}
           mission={mission}
           onMissionChange={handleMissionChange}
+          onAddEdge={handleOutcomeConnection}
+          onRemoveEdge={handleOutcomeDisconnection}
         />
       </div>
-      <p style={{ marginTop: 16 }}>Mission editor content coming soon.</p>
     </div>
   );
 }

@@ -36,6 +36,20 @@ export default function NodeLibrary({ onDragStart: onStart, onDragEnd: onEnd }) 
       >
         Mission Intro Node
       </div>
+      <div
+        style={{
+          padding: 8,
+          border: '1px solid #999',
+          borderRadius: 4,
+          cursor: 'grab',
+          marginTop: 8,
+        }}
+        onDragStart={(event) => handleDragStart(event, 'npc')}
+        onDragEnd={handleDragEnd}
+        draggable
+      >
+        NPC Node
+      </div>
     </aside>
   );
 }

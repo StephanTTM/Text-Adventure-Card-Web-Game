@@ -41,6 +41,7 @@ describe('App navigation', () => {
     expect(await screen.findByText('Main Menu')).toBeTruthy();
 
     fireEvent.click(screen.getByText('Mission Editor'));
-    expect(await screen.findByText('Mission editor content coming soon.')).toBeTruthy();
+    expect(await screen.findByText('Mission Editor')).toBeTruthy();
+    expect(await screen.findByText('NPC Node')).toBeTruthy();
   });
 });
