@@ -27,7 +27,7 @@ export default function RoomNode({ data, selected }) {
           fontWeight: 'bold',
         }}
       >
-        {data.label || 'Room'}
+        {data.name || 'Room'}
       </div>
       <div style={{ flex: 1 }} />
     </div>

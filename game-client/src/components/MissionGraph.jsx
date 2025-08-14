@@ -47,7 +47,13 @@ export default function MissionGraph({
         id,
         type,
         position,
-        data: { label: 'Room' },
+        data: {
+          name: 'Room',
+          art: '',
+          music: '',
+          exits: [],
+          auto_nodes: [],
+        },
         style: { width: 200, height: 150 },
       };
       setNodes((nds) => nds.concat(newNode));

@@ -12,8 +12,26 @@ export default function NodeInspector({ selectedNode, onChange }) {
 
   const { id, data } = selectedNode;
 
-  const handleNameChange = (e) => {
-    onChange({ ...selectedNode, data: { ...data, label: e.target.value } });
+  const handleFieldChange = (field, value) => {
+    onChange({ ...selectedNode, data: { ...data, [field]: value } });
+  };
+
+  const handleAutoNodesChange = (e) => {
+    const parts = e.target.value
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    handleFieldChange('auto_nodes', parts);
+  };
+
+  const handleExitsChange = (e) => {
+    let exits = data.exits || [];
+    try {
+      exits = JSON.parse(e.target.value);
+    } catch {
+      // ignore parse errors and keep previous value
+    }
+    handleFieldChange('exits', exits);
   };
 
   return (
@@ -24,9 +42,44 @@ export default function NodeInspector({ selectedNode, onChange }) {
         Name:
         <input
           type="text"
-          value={data.label || ''}
-          onChange={handleNameChange}
+          value={data.name || ''}
+          onChange={(e) => handleFieldChange('name', e.target.value)}
           style={{ width: '100%' }}
+        />
+      </label>
+      <label>
+        Art:
+        <input
+          type="text"
+          value={data.art || ''}
+          onChange={(e) => handleFieldChange('art', e.target.value)}
+          style={{ width: '100%' }}
+        />
+      </label>
+      <label>
+        Music:
+        <input
+          type="text"
+          value={data.music || ''}
+          onChange={(e) => handleFieldChange('music', e.target.value)}
+          style={{ width: '100%' }}
+        />
+      </label>
+      <label>
+        Auto Nodes (comma separated):
+        <input
+          type="text"
+          value={(data.auto_nodes || []).join(',')}
+          onChange={handleAutoNodesChange}
+          style={{ width: '100%' }}
+        />
+      </label>
+      <label>
+        Exits (JSON):
+        <textarea
+          value={JSON.stringify(data.exits || [])}
+          onChange={handleExitsChange}
+          style={{ width: '100%', height: 80 }}
         />
       </label>
     </aside>
