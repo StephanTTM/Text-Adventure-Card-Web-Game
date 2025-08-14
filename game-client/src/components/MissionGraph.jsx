@@ -74,7 +74,7 @@ export default function MissionGraph({
             exits: [],
             auto_nodes: [],
           },
-          style: { width: 200, height: 150, zIndex: 0 },
+          style: { width: 200, height: 150, zIndex: -1 },
         };
         setNodes((nds) => nds.concat(newNode));
         onLibraryDragEnd?.();

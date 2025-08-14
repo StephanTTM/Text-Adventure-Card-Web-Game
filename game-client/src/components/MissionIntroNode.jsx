@@ -2,7 +2,6 @@ import React from 'react';
 import { Handle } from 'reactflow';
 
 export default function MissionIntroNode({ id, data }) {
-  const outputCount = data.choices?.length || 0;
   return (
     <div
       style={{
@@ -14,10 +13,12 @@ export default function MissionIntroNode({ id, data }) {
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         position: 'relative',
+        gap: 4,
       }}
     >
+      <Handle type="target" position="left" />
       <strong>{data.title || 'Intro'}</strong>
       {!data.room_id && (
         <div style={{ color: 'orange', fontSize: 12 }}>⚠ Not in room</div>
@@ -25,14 +26,24 @@ export default function MissionIntroNode({ id, data }) {
       {(!data.choices || data.choices.length === 0) && (
         <div style={{ color: 'orange', fontSize: 12 }}>⚠ No outputs</div>
       )}
-      {data.choices?.map((_, idx) => (
-        <Handle
+      {data.choices?.map((choice, idx) => (
+        <div
           key={idx}
-          type="source"
-          position="bottom"
-          id={`${id}-out-${idx}`}
-          style={{ left: `${((idx + 1) / (outputCount + 1)) * 100}%` }}
-        />
+          style={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            fontSize: 12,
+            paddingRight: 8,
+          }}
+        >
+          <span>{choice.label || `Choice ${idx + 1}`}</span>
+          <Handle
+            type="source"
+            position="right"
+            id={`${id}-out-${idx}`}
+          />
+        </div>
       ))}
     </div>
   );

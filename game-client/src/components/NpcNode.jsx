@@ -21,7 +21,7 @@ export default function NpcNode({ id, data }) {
         position: 'relative',
       }}
     >
-      <Handle type="target" position="top" />
+      <Handle type="target" position="left" />
       <strong>{data.name || 'NPC'}</strong>
       {data.text && <div style={{ fontSize: 12 }}>{data.text}</div>}
       {!hasInput && (
