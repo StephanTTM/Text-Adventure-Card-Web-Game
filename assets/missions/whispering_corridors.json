@@ -59,6 +59,22 @@
       ]
     },
     {
+      "id": "secret_shortcut",
+      "type": "transition",
+      "room_id": "palace_hall",
+      "title": "Secret Shortcut",
+      "text": "Behind a loose tapestry, a narrow passage leads onward.",
+      "repeatable": true,
+      "priority": 4.5,
+      "entry_conditions": [],
+      "choices": [
+        {
+          "label": "Take the secret shortcut",
+          "outcomes": [{ "move_room": "side_corridor" }]
+        }
+      ]
+    },
+    {
       "id": "collapsed_corridor",
       "type": "lock",
       "room_id": "palace_hall",
