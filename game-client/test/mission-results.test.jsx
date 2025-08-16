@@ -40,6 +40,10 @@ describe('Mission results', () => {
       fireEvent.click(await screen.findByText('Slash'));
     }
 
+    // vault_loot -> Collect
+    await screen.findByText('Guard Satchel');
+    fireEvent.click(screen.getByText('Collect'));
+
     // to_vault_antechamber -> Proceed
     await screen.findByText('Descend the stairs');
     fireEvent.click(screen.getByText('Proceed'));

@@ -94,6 +94,12 @@
         "id": "rope",
         "name": "Climbing Rope",
         "quantity": 1
+      },
+      {
+        "id": "trail_rations",
+        "name": "Trail Rations",
+        "quantity": 1,
+        "tags": ["food"]
       }
     ],
     "cards": [
