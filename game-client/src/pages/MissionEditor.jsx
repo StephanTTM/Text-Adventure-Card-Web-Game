@@ -39,8 +39,39 @@ export default function MissionEditor() {
   );
 
   const onConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, eds)),
-    [setEdges]
+    (connection) => {
+      setEdges((eds) => {
+        const filtered = eds.filter(
+          (e) =>
+            !(e.source === connection.source &&
+              e.sourceHandle === connection.sourceHandle)
+        );
+        return addEdge(connection, filtered);
+      });
+
+      setNodes((nds) =>
+        nds.map((n) => {
+          if (n.id !== connection.source) return n;
+          const handle = connection.sourceHandle || '';
+          const match = handle.match(/-out-(\d+)/);
+          if (!match) return n;
+          const idx = Number(match[1]);
+          const choices = [...(n.data.choices || [])];
+          const choice = { ...choices[idx] };
+          if (!choice) return n;
+          const outcomes = [...(choice.outcomes || [])];
+          const existingIdx = outcomes.findIndex((o) => 'change_node' in o);
+          if (existingIdx >= 0) {
+            outcomes[existingIdx] = { change_node: connection.target };
+          } else {
+            outcomes.push({ change_node: connection.target });
+          }
+          choices[idx] = { ...choice, outcomes };
+          return { ...n, data: { ...n.data, choices } };
+        })
+      );
+    },
+    [setEdges, setNodes]
   );
 
   const handleNodeUpdate = useCallback(
