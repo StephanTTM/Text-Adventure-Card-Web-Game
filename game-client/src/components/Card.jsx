@@ -37,11 +37,13 @@ export default function Card({ card }) {
           .filter(([key]) => card.stats?.[key] !== undefined)
           .map(([key, label]) => `${label} ${card.stats[key]}`)
           .join(', ');
+        const baseHp = card.stats?.end ? card.stats.end * 2 : 20;
         return (
           <>
             <div>Class: {card.class}</div>
             <div>Race: {card.race}</div>
             {stats && <div>Stats: {stats}</div>}
+            <div>Base HP: {baseHp}</div>
             {card.abilities && <div>Abilities: {card.abilities.join(', ')}</div>}
             {card.primary_attack && <div>Primary: {card.primary_attack}</div>}
           </>
